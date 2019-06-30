@@ -33,12 +33,8 @@ export default {
     window.addEventListener('keypress', ({
       keyCode
     }) => {
-      if (keyCode === 32) {
-        this.slide();
-        this.sumNumbers();
-        this.slide();
-        this.addRandomNumber(1);
-      }
+
+      if (keyCode === 32) this.slideBottom();
 
     });
   },
@@ -73,44 +69,68 @@ export default {
       }
 
     },
-    slide(index) {
-      let hasNumbers = this.board.filter(element => element.numbers != "");
-      const reverse  = hasNumbers.map((val, index) => hasNumbers[hasNumbers.length - 1 - index]); // reverse array, element on for each will be the last element on Collumn;
+    slide(collumn) {
 
-      for(let element of reverse){
+      const getNumber = collumn.filter(item => item.numbers !== "");
 
-        const getEmpty = this.board.filter((item) => {
-          return item.x > element.x && item.y == element.y && item.numbers == "";  // get array of empty piece on Collumn
-        });
-
+      for (let element of getNumber) {
+        const getEmpty = collumn.filter(item => item.x > element.x  && item.numbers == ""); // change to < if want to go top
+        const [firstIndex] = getEmpty; // descontruct array to get first index;
         if(getEmpty.length > 0){
-          getEmpty[getEmpty.length - 1].numbers = element.numbers; //element to array index
+          firstIndex.numbers = element.numbers; //element to array index
           element.numbers = ""
         }else{
 
           continue
         }
-
       }
 
-    },
-    sumNumbers(){
-      for (let element of this.board) {
-        const getPieceNumber = this.board.filter((item) => {
-          return item.x > element.x && item.y == element.y && item.numbers != "";  // get array of empty piece on Collumn
-        });
 
-        if(getPieceNumber.length > 0){
-          if(getPieceNumber[getPieceNumber.length - 1].numbers ==  element.numbers){
-            getPieceNumber[getPieceNumber.length - 1].numbers += element.numbers;
-            element.numbers = ""
-          }else{
-            continue
-          }
+    },
+    sumNumbersTop(row){
+
+
+
+      for (var i = 0; i < row.length - 1; i++) {
+        if(row[i].numbers == row[i + 1].numbers){
+          row[i].numbers  += row[i + 1].numbers
+          row[i + 1].numbers = ""
         }
       }
 
-    }
+
+
+    },
+    sumNumbersBottom(row){
+      for (var i = row.length - 1; i > 0; i--) {
+        if(row[i].numbers == row[i - 1].numbers){
+          row[i].numbers  += row[i - 1].numbers
+          row[i - 1].numbers = ""
+        }
+      }
+    },
+    slideBottom(){
+      for (var i = 0; i < this.rowSize; i++) {
+        const collumn = this.board.filter(item => item.y == i);
+        const reverseCollumn = collumn.map((item,index) => collumn[collumn.length - 1 - index])
+        this.slide(reverseCollumn);
+        this.sumNumbersBottom(collumn);
+
+      }
+
+      this.addRandomNumber(1);
+    },
+    slideTop(){
+      for (var i = 0; i < this.rowSize; i++) {
+        const collumn = this.board.filter(item => item.y == i);
+        const reverseCollumn = collumn.map((item,index) => collumn[collumn.length - 1 - index])
+        this.slide(collumn);
+        this.sumNumbersTop(collumn);
+
+      }
+
+      this.addRandomNumber(1);
+    },
 
 
   },
