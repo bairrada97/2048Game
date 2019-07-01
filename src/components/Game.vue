@@ -23,30 +23,56 @@ export default {
       rowSize: 4,
       board: [],
       numbers: [2, 4],
-      moves: 0
+      moves: 0,
+      getEmpty: "",
+      bottom: false,
+      top: false,
+      left: false,
+      right: false
     }
 
   },
   mounted() {
     this.renderBoard();
     this.addRandomNumber(2);
-    window.addEventListener('keypress', ({
+    window.addEventListener('keydown', ({
       keyCode
     }) => {
+      for (var i = 0; i < this.rowSize; i++) {
+        const collumn = this.board.filter(item => item.y == i);
+        const reverseCollumn = collumn.map((item, index) => collumn[collumn.length - 1 - index]);
+        const row = this.board.filter(item => item.x == i);
+        const reverseRow = row.map((item, index) => row[row.length - 1 - index]);
 
-      if (keyCode === 32) this.slideBottom();
+        if (keyCode === 40) {
+          this.bottom = true;
+          this.combine(reverseCollumn);
+          this.bottom = false;
+
+        }
+        if (keyCode === 38) {
+          this.top = true;
+          this.combine(collumn);
+          this.top = false;
+        }
+        if (keyCode === 37) {
+          this.left = true;
+          this.combine(row);
+          this.left = false;
+        }
+        if (keyCode === 39) {
+          this.right = true;
+          this.combine(reverseRow);
+          this.right = false;
+        }
+
+      }
+      if (keyCode === 40 || keyCode === 38 || keyCode === 37 || keyCode === 39) this.addRandomNumber(1);
+
 
     });
   },
   methods: {
-    isInBounds(target) {
-      if (target != undefined) {
-        return (target.x >= 0 && target.x <= this.board.length - 1) && (target.y >= 0 && target.y <= this.board.length - 1)
-      } else {
-        return false
-      }
-
-    },
     renderBoard() {
       for (let r = 0; r < 16; r++) {
         let x = Math.floor(r / this.rowSize),
@@ -70,16 +96,21 @@ export default {
 
     },
     slide(collumn) {
-
+      var that = this;
       const getNumber = collumn.filter(item => item.numbers !== "");
-
+      let getEmpty = "";
       for (let element of getNumber) {
-        const getEmpty = collumn.filter(item => item.x > element.x  && item.numbers == ""); // change to < if want to go top
+
+        if (that.top) getEmpty = collumn.filter(item => item.x < element.x && item.numbers == "");
+        if (that.bottom) getEmpty = collumn.filter(item => item.x > element.x && item.numbers == "");
+        if (that.left) getEmpty = collumn.filter(item => item.y < element.y && item.numbers == "");
+        if (that.right) getEmpty = collumn.filter(item => item.y > element.y && item.numbers == "");
+        // change to < if want to go top
         const [firstIndex] = getEmpty; // descontruct array to get first index;
-        if(getEmpty.length > 0){
+        if (getEmpty.length > 0) {
           firstIndex.numbers = element.numbers; //element to array index
           element.numbers = ""
-        }else{
+        } else {
 
           continue
         }
@@ -87,50 +118,31 @@ export default {
 
 
     },
-    sumNumbersTop(row){
-
-
-
+    sumNumbers(row) {
       for (var i = 0; i < row.length - 1; i++) {
-        if(row[i].numbers == row[i + 1].numbers){
-          row[i].numbers  += row[i + 1].numbers
+        if (row[i].numbers == row[i + 1].numbers) {
+          row[i].numbers += row[i + 1].numbers
           row[i + 1].numbers = ""
         }
       }
-
-
+    },
+    combine(collumn) {
+      this.slide(collumn);
+      this.sumNumbers(collumn);
+      this.slide(collumn);
 
     },
-    sumNumbersBottom(row){
-      for (var i = row.length - 1; i > 0; i--) {
-        if(row[i].numbers == row[i - 1].numbers){
-          row[i].numbers  += row[i - 1].numbers
-          row[i - 1].numbers = ""
-        }
-      }
-    },
-    slideBottom(){
-      for (var i = 0; i < this.rowSize; i++) {
-        const collumn = this.board.filter(item => item.y == i);
-        const reverseCollumn = collumn.map((item,index) => collumn[collumn.length - 1 - index])
-        this.slide(reverseCollumn);
-        this.sumNumbersBottom(collumn);
-
-      }
-
-      this.addRandomNumber(1);
-    },
-    slideTop(){
-      for (var i = 0; i < this.rowSize; i++) {
-        const collumn = this.board.filter(item => item.y == i);
-        const reverseCollumn = collumn.map((item,index) => collumn[collumn.length - 1 - index])
-        this.slide(collumn);
-        this.sumNumbersTop(collumn);
-
-      }
-
-      this.addRandomNumber(1);
-    },
+    // slideTop(){
+    //   for (var i = 0; i < this.rowSize; i++) {
+    //     const collumn = this.board.filter(item => item.y == i);
+    //     const reverseCollumn = collumn.map((item,index) => collumn[collumn.length - 1 - index])
+    //     this.slide(collumn);
+    //     this.sumNumbers(collumn);
+    //
+    //   }
+    //
+    //   this.addRandomNumber(1);
+    // },
 
 
   },

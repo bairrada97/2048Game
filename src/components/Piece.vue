@@ -1,5 +1,5 @@
 <template>
-<li class="item" :data-x="piece.x" :data-y="piece.y">{{piece.numbers}}</li>
+<li :style="{color: ze}" class="item" :data-x="piece.x" :data-y="piece.y">{{piece.numbers}}</li>
 </div>
 
 </div>
@@ -11,6 +11,7 @@ export default {
   props: ['piece'],
   data() {
     return {
+
 
     }
   },
