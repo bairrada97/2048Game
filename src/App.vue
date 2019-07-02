@@ -1,5 +1,6 @@
 <template>
 <main id="app">
+  
   <Game />
 </main>
 </template>

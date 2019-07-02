@@ -1,8 +1,21 @@
 <template>
-<div class="game">
-  <ul class="game__grid">
-    <Piece v-for="(piece, index) in board" :key="index" :piece="piece" />
-  </ul>
+<div class="">
+  <button type="button" name="button" @click="newGame">new game</button>
+  <div class="score">
+    <h2 class="scoreTitle">Your Score:</h2>
+    <p>{{scoreTotal}}</p>
+    <span>+{{scoreNumber}}</span>
+  </div>
+  <div class="gameOver" v-if="noPossibleMoves">
+    <p>Game over!</p>
+    <button type="button" name="button" @click="newGame">try again</button>
+  </div>
+  <div class="game">
+    <ul class="game__grid">
+      <Piece v-for="(piece, index) in board" :key="index" :piece="piece"/>
+    </ul>
+  </div>
+
 </div>
 
 </div>
@@ -22,13 +35,16 @@ export default {
       size: 16,
       rowSize: 4,
       board: [],
-      numbers: [2, 4],
-      moves: 0,
+      scoreTotal: 0,
+      scoreNumber: 0,
       getEmpty: "",
       bottom: false,
       top: false,
       left: false,
-      right: false
+      right: false,
+      noPossibleMoves: false,
+      win: false
+
     }
 
   },
@@ -67,10 +83,19 @@ export default {
         }
 
       }
-      if (keyCode === 40 || keyCode === 38 || keyCode === 37 || keyCode === 39) this.addRandomNumber(1);
+      if (keyCode === 40 || keyCode === 38 || keyCode === 37 || keyCode === 39  ) {
+
+          this.addRandomNumber(1);
+          // this.gameWon();
+          // if (this.win) console.log('game Won');
+          this.gameOver();
+          if ( this.noPossibleMoves) console.log('game Over');
 
 
+      }
     });
+
+
   },
   methods: {
     renderBoard() {
@@ -83,6 +108,7 @@ export default {
           id: r,
           numbers: ""
         });
+
       }
     },
     addRandomNumber(number) {
@@ -90,8 +116,16 @@ export default {
       for (let i = 0; i < number; i++) {
         let boardMap = this.board.filter(element => element.numbers == "");
         let randomTile = boardMap[Math.floor(Math.random() * boardMap.length)],
-          randomNumber = this.numbers[Math.floor(Math.random() * this.numbers.length)];
-        randomTile.numbers = randomNumber;
+          randomNumber = Math.random() < 0.9 ? 2 : 4;
+
+        if (number == 1 && boardMap.length == 0) {
+          this.noPossibleMoves = true;
+        } else {
+          randomTile.numbers = randomNumber;
+        }
+
+
+
       }
 
     },
@@ -99,30 +133,41 @@ export default {
       var that = this;
       const getNumber = collumn.filter(item => item.numbers !== "");
       let getEmpty = "";
+      this.NoPossibleMoves = false;
       for (let element of getNumber) {
 
         if (that.top) getEmpty = collumn.filter(item => item.x < element.x && item.numbers == "");
         if (that.bottom) getEmpty = collumn.filter(item => item.x > element.x && item.numbers == "");
         if (that.left) getEmpty = collumn.filter(item => item.y < element.y && item.numbers == "");
         if (that.right) getEmpty = collumn.filter(item => item.y > element.y && item.numbers == "");
-        // change to < if want to go top
-        const [firstIndex] = getEmpty; // descontruct array to get first index;
+
+        const [firstIndex] = getEmpty;
+
         if (getEmpty.length > 0) {
-          firstIndex.numbers = element.numbers; //element to array index
-          element.numbers = ""
+          firstIndex.numbers = element.numbers;
+          element.numbers = "";
+          this.NoPossibleMoves = false;
         } else {
 
           continue
+
         }
+        this.NoPossibleMoves = true;
+
       }
 
 
     },
     sumNumbers(row) {
+
       for (var i = 0; i < row.length - 1; i++) {
         if (row[i].numbers == row[i + 1].numbers) {
-          row[i].numbers += row[i + 1].numbers
-          row[i + 1].numbers = ""
+          row[i].numbers += row[i + 1].numbers;
+          this.scoreNumber = ~~row[i].numbers;
+          this.scoreTotal += ~~row[i].numbers;
+
+          row[i + 1].numbers = "";
+
         }
       }
     },
@@ -132,19 +177,33 @@ export default {
       this.slide(collumn);
 
     },
-    // slideTop(){
-    //   for (var i = 0; i < this.rowSize; i++) {
-    //     const collumn = this.board.filter(item => item.y == i);
-    //     const reverseCollumn = collumn.map((item,index) => collumn[collumn.length - 1 - index])
-    //     this.slide(collumn);
-    //     this.sumNumbers(collumn);
-    //
-    //   }
-    //
-    //   this.addRandomNumber(1);
-    // },
+    newGame() {
+      this.board = [];
+      this.renderBoard();
+      this.addRandomNumber(2);
+      this.scoreTotal = 0;
+    },
+    gameOver() {
+      for (var i = 0; i < this.board.length; i++) {
+        if (this.board[i].number !== "") {
+  
+          continue;
+        }else{
+            this.noPossibleMoves = false;
+          return
+        }
 
+        this.noPossibleMoves = true;
 
+      }
+
+    },
+    gameWon() {
+      for (var i = 0; i < this.board.length; i++) {
+        if (this.board[i].numbers === 2048) this.win = true;
+      }
+      return false;
+    }
   },
 
 
