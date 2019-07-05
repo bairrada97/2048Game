@@ -1,6 +1,6 @@
 <template>
 <main id="app">
-  
+
   <Game />
 </main>
 </template>
@@ -38,6 +38,8 @@ export default {
 
 <style lang="scss">
 @import '@/styles/reset.scss';
+
+
 
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;

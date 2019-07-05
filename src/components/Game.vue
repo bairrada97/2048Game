@@ -6,13 +6,16 @@
     <p>{{scoreTotal}}</p>
     <span>+{{scoreNumber}}</span>
   </div>
-  <div class="gameOver" v-if="noPossibleMoves">
+  <div class="gameOver">
     <p>Game over!</p>
     <button type="button" name="button" @click="newGame">try again</button>
   </div>
   <div class="game">
-    <ul class="game__grid">
-      <Piece v-for="(piece, index) in board" :key="index" :piece="piece"/>
+    <ul class="game__grid" ref="grid">
+      <Piece v-for="(piece, index) in board" :key="index" :piece="piece" />
+    </ul>
+    <ul class="game__board">
+      <li v-for="piece in board" class="item"></li>
     </ul>
   </div>
 
@@ -42,71 +45,80 @@ export default {
       top: false,
       left: false,
       right: false,
-      noPossibleMoves: false,
-      win: false
+      isSlide: false,
+      isGameOver: true
+
 
     }
 
   },
   mounted() {
-    this.renderBoard();
-    this.addRandomNumber(2);
+    var that = this;
+    that.renderBoard();
+    that.addRandomNumber(2);
     window.addEventListener('keydown', ({
       keyCode
     }) => {
-      for (var i = 0; i < this.rowSize; i++) {
-        const collumn = this.board.filter(item => item.y == i);
+      that.isSlide = false;
+      that.isGameOver = true;
+      for (var i = 0; i < that.rowSize; i++) {
+        const collumn = that.board.filter(item => item.y == i);
         const reverseCollumn = collumn.map((item, index) => collumn[collumn.length - 1 - index]);
-        const row = this.board.filter(item => item.x == i);
+        const row = that.board.filter(item => item.x == i);
         const reverseRow = row.map((item, index) => row[row.length - 1 - index]);
 
         if (keyCode === 40) {
-          this.bottom = true;
-          this.combine(reverseCollumn);
-          this.bottom = false;
+          that.bottom = true;
+          that.combine(reverseCollumn);
+          that.bottom = false;
 
         }
         if (keyCode === 38) {
-          this.top = true;
-          this.combine(collumn);
-          this.top = false;
+          that.top = true;
+          that.combine(collumn);
+          that.top = false;
         }
         if (keyCode === 37) {
-          this.left = true;
-          this.combine(row);
-          this.left = false;
+          that.left = true;
+          that.combine(row);
+          that.left = false;
         }
         if (keyCode === 39) {
-          this.right = true;
-          this.combine(reverseRow);
-          this.right = false;
+          that.right = true;
+          that.combine(reverseRow);
+          that.right = false;
         }
 
       }
-      if (keyCode === 40 || keyCode === 38 || keyCode === 37 || keyCode === 39  ) {
+      if (keyCode === 40 || keyCode === 38 || keyCode === 37 || keyCode === 39) {
 
-          this.addRandomNumber(1);
-          // this.gameWon();
-          // if (this.win) console.log('game Won');
-          this.gameOver();
-          if ( this.noPossibleMoves) console.log('game Over');
-
+        if (that.isSlide) that.addRandomNumber(1);
+        const allFilled = this.board.filter((element) => element.numbers !== "");
+        if (allFilled.length === this.board.length && this.gameOver()) console.log('game Over');
 
       }
+
     });
 
 
   },
   methods: {
     renderBoard() {
-      for (let r = 0; r < 16; r++) {
+      let widthGrid = this.$refs.grid.clientWidth,
+        widthPiece = (widthGrid + 20) / this.rowSize;
+              console.log(widthPiece);
+      for (let r = 0; r < this.size; r++) {
         let x = Math.floor(r / this.rowSize),
-          y = r - (Math.floor(r / this.rowSize) * this.rowSize);
+          y =  r - (Math.floor(r / this.rowSize) * this.rowSize);
         this.board.push({
           x: x,
           y: y,
           id: r,
-          numbers: ""
+          numbers: "",
+          pos: {
+            left: (widthPiece * y ),
+            top: (widthPiece * x ),
+          }
         });
 
       }
@@ -118,11 +130,9 @@ export default {
         let randomTile = boardMap[Math.floor(Math.random() * boardMap.length)],
           randomNumber = Math.random() < 0.9 ? 2 : 4;
 
-        if (number == 1 && boardMap.length == 0) {
-          this.noPossibleMoves = true;
-        } else {
-          randomTile.numbers = randomNumber;
-        }
+
+        randomTile.numbers = randomNumber;
+
 
 
 
@@ -133,7 +143,6 @@ export default {
       var that = this;
       const getNumber = collumn.filter(item => item.numbers !== "");
       let getEmpty = "";
-      this.NoPossibleMoves = false;
       for (let element of getNumber) {
 
         if (that.top) getEmpty = collumn.filter(item => item.x < element.x && item.numbers == "");
@@ -144,37 +153,52 @@ export default {
         const [firstIndex] = getEmpty;
 
         if (getEmpty.length > 0) {
-          firstIndex.numbers = element.numbers;
-          element.numbers = "";
-          this.NoPossibleMoves = false;
-        } else {
+          const newLeft = element.pos.left,
+                newTop = element.pos.top,
+                newX = element.x,
+                newY = element.y
 
-          continue
+          element.pos.left = firstIndex.pos.left;
+          element.pos.top = firstIndex.pos.top;
+          element.x = firstIndex.x;
+          element.y = firstIndex.y;
 
+          firstIndex.pos.left = newLeft;
+          firstIndex.pos.top = newTop;
+          firstIndex.x = newX;
+          firstIndex.y = newY;
+
+          //firstIndex.numbers = element.numbers;
+          console.log(element, element);
+
+
+          //
+          // element.numbers = "";
+          that.isSlide = true;
         }
-        this.NoPossibleMoves = true;
+
 
       }
-
 
     },
     sumNumbers(row) {
 
       for (var i = 0; i < row.length - 1; i++) {
-        if (row[i].numbers == row[i + 1].numbers) {
+        let sum = row[i].numbers != "" && row[i + 1].numbers != "" ? row[i].numbers == row[i + 1].numbers : false;
+        if (sum) {
           row[i].numbers += row[i + 1].numbers;
           this.scoreNumber = ~~row[i].numbers;
           this.scoreTotal += ~~row[i].numbers;
 
           row[i + 1].numbers = "";
-
+          this.isSlide = true;
         }
       }
     },
     combine(collumn) {
       this.slide(collumn);
       this.sumNumbers(collumn);
-      this.slide(collumn);
+      //this.slide(collumn);
 
     },
     newGame() {
@@ -184,27 +208,34 @@ export default {
       this.scoreTotal = 0;
     },
     gameOver() {
-      for (var i = 0; i < this.board.length; i++) {
-        if (this.board[i].number !== "") {
-  
-          continue;
-        }else{
-            this.noPossibleMoves = false;
-          return
+      for (var i = 0; i < this.rowSize; i++) {
+        const collumn = this.board.filter(item => item.y == i);
+        const reverseCollumn = collumn.map((item, index) => collumn[collumn.length - 1 - index]);
+        const row = this.board.filter(item => item.x == i);
+        const reverseRow = row.map((item, index) => row[row.length - 1 - index]);
+
+        for (var j = 0; j < this.rowSize - 1; j++) {
+          if (collumn[j].numbers == collumn[j + 1].numbers && collumn[j].numbers !== " ") this.isGameOver = false;
+          if (row[j].numbers == row[j + 1].numbers && row[j].numbers != "") this.isGameOver = false;
+          if (reverseCollumn[j].numbers == reverseCollumn[j + 1].numbers && reverseCollumn[j].numbers != "") this.isGameOver = false;
+          if (reverseRow[j].numbers == reverseRow[j + 1].numbers && reverseRow[j].numbers != "") this.isGameOver = false;
         }
 
-        this.noPossibleMoves = true;
 
       }
-
     },
-    gameWon() {
-      for (var i = 0; i < this.board.length; i++) {
-        if (this.board[i].numbers === 2048) this.win = true;
-      }
-      return false;
-    }
+    // gameWon() {
+    //   for (var i = 0; i < this.board.length; i++) {
+    //     if (this.board[i].numbers === 2048) this.win = true;
+    //   }
+    //   return false;
+    // }
   },
+  computed:{
+    getPosition(){
+
+    }
+  }
 
 
 }
@@ -212,18 +243,99 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
+@mixin lg {
+   @media screen and (max-width: 850px), screen and (max-height: 800px) {
+      @content;
+   }
+}
+@mixin md {
+   @media screen and (max-width: 650px), screen and (max-height: 800px) {
+      @content;
+   }
+}
+
+@mixin sm {
+   @media screen and (max-width: 500px), screen and (max-height: 700px) {
+      @content;
+   }
+}
 .game {
+    position: relative;
     padding: 20px;
-    box-sizing: border-box;
-    background: #bbada0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255, 0.7);
+    border-radius: 5px;
+
+    @include sm {
+         padding: 10px;
+         }
 
     &__grid {
+        width: 500px;
+        height: 500px;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        border-radius: 6px;
-        grid-row-gap: 10px;
-        grid-column-gap: 10px;
+        grid-column-gap: 20px;
+        grid-row-gap: 20px;
+        margin: 0;
+        padding: 0;
+        transition: all 0.5s ease;
+        position: absolute;
+
+        @include md {
+           width: 400px;
+           height: 400px;
+        }
+
+        @include sm {
+           width: 280px;
+           height: 280px;
+           grid-column-gap:10px;
+           grid-row-gap: 10px;
+        }
+    }
+
+    &__board{
+      width: 500px;
+      height: 500px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-column-gap: 20px;
+      grid-row-gap: 20px;
+      margin: 0;
+      padding: 0;
+      transition: all 0.5s ease;
+
+      @include md {
+         width: 400px;
+         height: 400px;
+      }
+
+      @include sm {
+         width: 280px;
+         height: 280px;
+         grid-column-gap:10px;
+         grid-row-gap: 10px;
+      }
+    }
+
+    .item {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        box-shadow: inset 0 0 40px 0 darken(#fdf5f0, 8%);
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: 100ms all ease;
+
+
 
     }
+
+
 }
 </style>

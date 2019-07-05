@@ -1,5 +1,7 @@
 <template>
-<li :style="{background: addColor}"  class="item" :data-x="piece.x" :data-y="piece.y">{{piece.numbers}}</li>
+
+  <p :style="{background: addColor, transform: `translate(${piece.pos.left}px, ${piece.pos.top}px)`}" class="piece" :data-x="piece.x" :data-y="piece.y" :data-left=" piece.pos.left" :data-top="piece.pos.top">{{piece.numbers}}</p>
+
 </div>
 
 </div>
@@ -12,58 +14,77 @@ export default {
   data() {
     return {
       color: "",
-      colors:{
-        "2":{
-          color: "#f03232"
+      colors: {
+        "2": {
+          bgColor: "#ffe09d",
+          color: "darken(#ffe09d, 35%)"
         },
-        "4":{
-          color: "#d28787"
+        "4": {
+          bgColor: "#ecb562",
+          color: "lighten(#ecb562, 25%)"
         },
-        "8":{
-          color: "#86882a"
+        "8": {
+          bgColor: "#e89355",
+          color: "lighten(#ecb562, 25%)"
         },
-        "16":{
-          color: "#ffd093"
+        "16": {
+          bgColor: "#f1cec6",
+          color: "darken(#f1cec6, 20%)"
         },
-        "32":{
-          color: "#3f42bb"
+        "32": {
+          bgColor: "#eb8a7b",
+          color: "lighten(#eb8a7b, 20%)"
         },
-        "64":{
-          color: "#2ea0d8"
+        "64": {
+          bgColor: "#d75c48",
+          color: "lighten(#d75c48, 30%)"
         },
-        "128":{
-          color: "#2ed86b"
+        "128": {
+          bgColor: "#bae3db",
+          color: "darken(#bae3db, 35%)"
         },
-        "256":{
-          color: "#3a2e13"
+        "256": {
+          bgColor: "#81c7b8",
+          color: "darken(#81c7b8, 30%)"
         },
-        "512":{
-          color: "#520505"
+        "512": {
+          bgColor: "#36857b",
+          color: "lighten(#36857b, 30%)"
         },
-        "1024":{
-          color: "#0c72a5"
+        "1024": {
+          bgColor: "#d4ddea",
+          color: "darken(#d4ddea, 30%)"
         },
-        "2048":{
-          color: "#072331"
+        "2048": {
+          bgColor: "#acc3de",
+          color: "lighten(#acc3de, 30%)"
         },
-        "more":{
-          color: "#000000"
+        "4096": {
+          bgColor: "#7084a1",
+          color: "lighten(#7084a1, 30%)"
+        },
+        "8192": {
+          bgColor: "#39537a",
+          color: "lighten(#39537a, 32%)"
+        },
+        "more": {
+          bgColor: "#69597a",
+          color: "lighten(#69597a, 35%)"
         }
       }
 
     }
   },
   computed: {
-    addColor(){
-      if(this.piece.numbers != 0 && this.piece.numbers <= 2048){
+    addColor() {
+      if (this.piece.numbers != 0 && this.piece.numbers <= 2048) {
         let number = "" + this.piece.numbers;
-        return this.colors[number].color;
-      }else if(this.piece.numbers > 2048){
-        return this.colors["more"].color
+        return this.colors[number].bgColor;
+      } else if (this.piece.numbers > 2048) {
+        return this.colors["more"].bgColor;
       }
+    },
 
-
-    }
   }
 
 }
@@ -71,16 +92,45 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
-.item {
-    width: 120px;
-    height: 120px;
-    background: rgba(238, 228, 218, 0.73);
-    border: 2px solid black;
-    border-radius: 3px;
+@mixin lg {
+   @media screen and (max-width: 850px), screen and (max-height: 800px) {
+      @content;
+   }
+}
+@mixin md {
+   @media screen and (max-width: 650px), screen and (max-height: 800px) {
+      @content;
+   }
+}
+
+@mixin sm {
+   @media screen and (max-width: 500px), screen and (max-height: 700px) {
+      @content;
+   }
+}
+
+
+.piece {
+    width: 100%;
+    height: 100%;
+    max-width: 110px;
+    max-height: 110px;
+    border-radius: 5px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-size: 50px;
-    color: white;
+    align-items: center;
+    font-weight: 500;
+    font-size: 45px;
+    position: absolute;
+    z-index: 1;
+    transition: 100ms all ease;
+
+    @include md {
+        font-size: 28px;
+    }
+
+    @include sm {
+        font-size: 22px;
+    }
 }
 </style>
