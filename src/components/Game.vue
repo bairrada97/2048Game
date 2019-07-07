@@ -160,22 +160,25 @@ export default {
 
 
 
-          element.x = getEmpty.x;
-          element.y = getEmpty.y;
-          element.left = getEmpty.left;
-          element.top = getEmpty.top;
-element.id = getEmpty.id;
-getEmpty.id = newElement.id
-          getEmpty.x = newElement.x;
-          getEmpty.y = newElement.y;
-          getEmpty.left = newElement.left;
-          getEmpty.top = newElement.top;
+          // element.x = getEmpty.x;
+          // element.y = getEmpty.y;
+          // element.left = getEmpty.left;
+          // element.top = getEmpty.top;
+          // element.id = getEmpty.id;
+          // getEmpty.id = newElement.id
+          // getEmpty.x = newElement.x;
+          // getEmpty.y = newElement.y;
+          // getEmpty.left = newElement.left;
+          // getEmpty.top = newElement.top;
 
 
-          // firstIndex.numbers = element.numbers;
-          // element = firstIndex;
-          //           newElement.numbers = ""
-          // firstIndex = newElement;
+          getEmpty.numbers = element.numbers;
+          element.numbers = ""
+          element = getEmpty;
+
+          getEmpty = newElement;
+          getEmpty.numbers = ""
+          console.log(collumn);
 
 
 
@@ -189,7 +192,7 @@ getEmpty.id = newElement.id
           //
           // element.numbers = "";
 
-              document.querySelectorAll('.piece')[element.id].style.transform = 'translate(' + getEmpty.left + 'px,' + getEmpty.top + 'px';
+        //document.querySelectorAll('.piece')[element.id].style.transform = 'translate(' + getEmpty.left + 'px,' + getEmpty.top + 'px';
           that.isSlide = true;
         }
 
