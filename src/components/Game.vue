@@ -106,7 +106,7 @@ export default {
     renderBoard() {
       let widthGrid = this.$refs.grid.clientWidth,
         widthPiece = (widthGrid + 20) / this.rowSize;
-              console.log(widthPiece);
+
       for (let r = 0; r < this.size; r++) {
         let x = Math.floor(r / this.rowSize),
           y =  r - (Math.floor(r / this.rowSize) * this.rowSize);
@@ -115,10 +115,8 @@ export default {
           y: y,
           id: r,
           numbers: "",
-          pos: {
-            left: (widthPiece * y ),
-            top: (widthPiece * x ),
-          }
+          left: (widthPiece * y ),
+          top: (widthPiece * x ),
         });
 
       }
@@ -142,38 +140,56 @@ export default {
     slide(collumn) {
       var that = this;
       const getNumber = collumn.filter(item => item.numbers !== "");
-      let getEmpty = "";
+
+      let getEmpty = "",
+      newElement;
       for (let element of getNumber) {
 
-        if (that.top) getEmpty = collumn.filter(item => item.x < element.x && item.numbers == "");
-        if (that.bottom) getEmpty = collumn.filter(item => item.x > element.x && item.numbers == "");
-        if (that.left) getEmpty = collumn.filter(item => item.y < element.y && item.numbers == "");
-        if (that.right) getEmpty = collumn.filter(item => item.y > element.y && item.numbers == "");
+        if (that.top) getEmpty = collumn.find(item => item.x < element.x && item.numbers == "");
+        if (that.bottom) getEmpty = collumn.find(item => item.x > element.x && item.numbers == "");
+        if (that.left) getEmpty = collumn.find(item => item.y < element.y && item.numbers == "");
+        if (that.right) getEmpty = collumn.find(item => item.y > element.y && item.numbers == "");
 
-        const [firstIndex] = getEmpty;
+        //const [firstIndex] = getEmpty;
 
-        if (getEmpty.length > 0) {
-          const newLeft = element.pos.left,
-                newTop = element.pos.top,
-                newX = element.x,
-                newY = element.y
-
-          element.pos.left = firstIndex.pos.left;
-          element.pos.top = firstIndex.pos.top;
-          element.x = firstIndex.x;
-          element.y = firstIndex.y;
-
-          firstIndex.pos.left = newLeft;
-          firstIndex.pos.top = newTop;
-          firstIndex.x = newX;
-          firstIndex.y = newY;
-
-          //firstIndex.numbers = element.numbers;
-          console.log(element, element);
+        if (getEmpty) {
+          newElement =  Object.assign({}, element);
 
 
+        document.querySelectorAll('.piece')[element.id].style.transform = 'translate(' + getEmpty.left + 'px,' + getEmpty.top + 'px';
+
+
+
+          element.x = getEmpty.x;
+          element.y = getEmpty.y;
+          element.left = getEmpty.left;
+          element.top = getEmpty.top;
+element.id = getEmpty.id;
+getEmpty.id = newElement.id
+          getEmpty.x = newElement.x;
+          getEmpty.y = newElement.y;
+          getEmpty.left = newElement.left;
+          getEmpty.top = newElement.top;
+
+
+          // firstIndex.numbers = element.numbers;
+          // element = firstIndex;
+          //           newElement.numbers = ""
+          // firstIndex = newElement;
+
+
+
+
+
+
+          // firstIndex.numbers = element.numbers;
+          //
+          //
+          //
           //
           // element.numbers = "";
+
+              document.querySelectorAll('.piece')[element.id].style.transform = 'translate(' + getEmpty.left + 'px,' + getEmpty.top + 'px';
           that.isSlide = true;
         }
 
@@ -198,7 +214,10 @@ export default {
     combine(collumn) {
       this.slide(collumn);
       this.sumNumbers(collumn);
-      //this.slide(collumn);
+      this.slide(collumn);
+      //this.board.sort((a,b) => a.id - b.id)
+
+      console.log(this.board);
 
     },
     newGame() {
@@ -281,20 +300,10 @@ export default {
         grid-row-gap: 20px;
         margin: 0;
         padding: 0;
-        transition: all 0.5s ease;
+        transition: all 1.5s ease;
         position: absolute;
 
-        @include md {
-           width: 400px;
-           height: 400px;
-        }
 
-        @include sm {
-           width: 280px;
-           height: 280px;
-           grid-column-gap:10px;
-           grid-row-gap: 10px;
-        }
     }
 
     &__board{
@@ -306,19 +315,9 @@ export default {
       grid-row-gap: 20px;
       margin: 0;
       padding: 0;
-      transition: all 0.5s ease;
+      transition: all 1.5s ease;
 
-      @include md {
-         width: 400px;
-         height: 400px;
-      }
 
-      @include sm {
-         width: 280px;
-         height: 280px;
-         grid-column-gap:10px;
-         grid-row-gap: 10px;
-      }
     }
 
     .item {
@@ -330,7 +329,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        transition: 100ms all ease;
+        transition: 1.5s all ease;
 
 
 

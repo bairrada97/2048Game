@@ -1,6 +1,6 @@
 <template>
 
-  <p :style="{background: addColor, transform: `translate(${piece.pos.left}px, ${piece.pos.top}px)`}" class="piece" :data-x="piece.x" :data-y="piece.y" :data-left=" piece.pos.left" :data-top="piece.pos.top">{{piece.numbers}}</p>
+  <p :style="{background: addColor, transform: `translate(${piece.left}px, ${piece.top}px)`}" class="piece" :data-x="piece.x" :data-y="piece.y" :data-left=" piece.left" :data-top="piece.top" :data-number="piece.numbers">{{piece.numbers}}</p>
 
 </div>
 
@@ -123,7 +123,7 @@ export default {
     font-size: 45px;
     position: absolute;
     z-index: 1;
-    transition: 100ms all ease;
+    transition: 1.5s all ease;
 
     @include md {
         font-size: 28px;
