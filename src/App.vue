@@ -38,16 +38,17 @@ export default {
 
 <style lang="scss">
 @import '@/styles/reset.scss';
+@import url("https://fonts.googleapis.com/css?family=Barlow+Condensed:300,400,500,600,700,800,900|Barlow+Semi+Condensed:300,400,500,600,700,800,900|Barlow:300,400,500,600,700,800,900&display=swap");
 
 
 
 #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-family: "Barlow", sans-serif;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f7f7f7;
+    background: #ffe4d4;
 
 
 }

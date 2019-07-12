@@ -1,6 +1,6 @@
 <template>
 
-  <p :style="{background: addColor, transform: `translate(${piece.left}px, ${piece.top}px)`}" class="piece" :data-x="piece.x" :data-y="piece.y" :data-left=" piece.left" :data-top="piece.top" :data-number="piece.numbers">{{piece.numbers}}</p>
+  <p :style="{color: number, background:addColor, transform: `translate(${piece.left}px, ${piece.top}px)`}" class="piece" :data-left=" piece.left" :data-top="piece.top" :data-number="piece.numbers">{{piece.numbers}}</p>
 
 </div>
 
@@ -17,59 +17,73 @@ export default {
       colors: {
         "2": {
           bgColor: "#ffe09d",
-          color: "darken(#ffe09d, 35%)"
+          color: "#eaa000",
+          fontFamily: "Barlow"
         },
         "4": {
           bgColor: "#ecb562",
-          color: "lighten(#ecb562, 25%)"
+          color: "#faebd4",
+          fontFamily: "Barlow"
         },
         "8": {
           bgColor: "#e89355",
-          color: "lighten(#ecb562, 25%)"
+          color: "#f7dac5",
+          fontFamily: "Barlow"
         },
         "16": {
           bgColor: "#f1cec6",
-          color: "darken(#f1cec6, 20%)"
+          color: "#dd8874",
+          fontFamily: "Barlow"
         },
         "32": {
           bgColor: "#eb8a7b",
-          color: "lighten(#eb8a7b, 20%)"
+          color: "#f8d9d4",
+          fontFamily: "Barlow"
         },
         "64": {
           bgColor: "#d75c48",
-          color: "lighten(#d75c48, 30%)"
+          color: "#f2ccc6",
+          fontFamily: "Barlow"
         },
         "128": {
           bgColor: "#bae3db",
-          color: "darken(#bae3db, 35%)"
+          color: "#44a793",
+          fontFamily: "Barlow Semi Condensed"
         },
         "256": {
           bgColor: "#81c7b8",
-          color: "darken(#81c7b8, 30%)"
+          color: "#36796b",
+          fontFamily: "Barlow Semi Condensed"
         },
         "512": {
           bgColor: "#36857b",
-          color: "lighten(#36857b, 30%)"
+          color: "#86cec5",
+          fontFamily: "Barlow Semi Condensed"
         },
         "1024": {
           bgColor: "#d4ddea",
-          color: "darken(#d4ddea, 30%)"
+          color: "#6d8cb8",
+          fontFamily: "Barlow Condensed"
         },
         "2048": {
           bgColor: "#acc3de",
-          color: "lighten(#acc3de, 30%)"
+          color: "#4574ac",
+          fontFamily: "Barlow Condensed"
         },
         "4096": {
           bgColor: "#7084a1",
-          color: "lighten(#7084a1, 30%)"
+          color: "#ccd3de",
+          fontFamily: "Barlow Condensed"
         },
         "8192": {
           bgColor: "#39537a",
-          color: "lighten(#39537a, 32%)"
+          color: "#8da5ca",
+          fontFamily: "Barlow Condensed"
         },
         "more": {
           bgColor: "#69597a",
-          color: "lighten(#69597a, 35%)"
+          color: "#c2b9cc",
+          fontFamily: "Barlow Condensed"
         }
       }
 
@@ -84,6 +98,21 @@ export default {
         return this.colors["more"].bgColor;
       }
     },
+    number(){
+      if (this.piece.numbers != 0 && this.piece.numbers <= 2048) {
+        let number = "" + this.piece.numbers;
+        return this.colors[number].color;
+      } else if (this.piece.numbers > 2048) {
+        return this.colors["more"].color;
+      }
+    },
+    changeFont(){
+      let number = "" + this.piece.numbers;
+      if(number){
+          return this.colors[number].fontFamily;
+      }
+
+    }
 
   }
 
@@ -92,22 +121,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
-@mixin lg {
-   @media screen and (max-width: 850px), screen and (max-height: 800px) {
-      @content;
-   }
-}
-@mixin md {
-   @media screen and (max-width: 650px), screen and (max-height: 800px) {
-      @content;
-   }
-}
-
-@mixin sm {
-   @media screen and (max-width: 500px), screen and (max-height: 700px) {
-      @content;
-   }
-}
 
 
 .piece {
@@ -122,15 +135,9 @@ export default {
     font-weight: 500;
     font-size: 45px;
     position: absolute;
+    color: white;
     z-index: 1;
-    transition: 1.5s all ease;
+    transition: 200ms all ease-in-out;
 
-    @include md {
-        font-size: 28px;
-    }
-
-    @include sm {
-        font-size: 22px;
-    }
 }
 </style>
