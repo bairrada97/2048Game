@@ -1,6 +1,6 @@
 <template>
 
-  <p :style="{color: number, background:addColor, transform: `translate(${piece.left}px, ${piece.top}px)`}" class="piece" :data-left=" piece.left" :data-top="piece.top" :data-number="piece.numbers">{{piece.numbers}}</p>
+  <p :style="{color: number, background:addColor, transform: `translate(${tile.left}px, ${tile.top}px)`}" class="piece" :data-left=" tile.left" :data-top="tile.top" :data-number="tile.numbers">{{tile.numbers}}</p>
 
 </div>
 
@@ -10,7 +10,7 @@
 <script>
 export default {
   name: 'Piece',
-  props: ['piece'],
+  props: ['tile'],
   data() {
     return {
       color: "",
@@ -91,23 +91,23 @@ export default {
   },
   computed: {
     addColor() {
-      if (this.piece.numbers != 0 && this.piece.numbers <= 2048) {
-        let number = "" + this.piece.numbers;
+      if (this.tile.numbers != 0 && this.tile.numbers <= 2048) {
+        let number = "" + this.tile.numbers;
         return this.colors[number].bgColor;
-      } else if (this.piece.numbers > 2048) {
+      } else if (this.tile.numbers > 2048) {
         return this.colors["more"].bgColor;
       }
     },
     number(){
-      if (this.piece.numbers != 0 && this.piece.numbers <= 2048) {
-        let number = "" + this.piece.numbers;
+      if (this.tile.numbers != 0 && this.tile.numbers <= 2048) {
+        let number = "" + this.tile.numbers;
         return this.colors[number].color;
-      } else if (this.piece.numbers > 2048) {
+      } else if (this.tile.numbers > 2048) {
         return this.colors["more"].color;
       }
     },
     changeFont(){
-      let number = "" + this.piece.numbers;
+      let number = "" + this.tile.numbers;
       if(number){
           return this.colors[number].fontFamily;
       }
@@ -137,7 +137,7 @@ export default {
     position: absolute;
     color: white;
     z-index: 1;
-    transition: 200ms all ease-in-out;
+    transition: 2000ms all ease-in-out;
 
 }
 </style>
