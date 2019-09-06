@@ -1,6 +1,7 @@
 <template>
-
-  <p :style="{color: number, background:addColor, transform: `translate(${tile.left}px, ${tile.top}px)`}" class="piece" :data-left=" tile.left" :data-top="tile.top" :data-number="tile.numbers">{{tile.numbers}}</p>
+<li :style="{transform: `translate(${tile.left}px, ${tile.top}px)`}" :class="{newTile: tile.new}" class="piece" :data-left=" tile.left" :data-top="tile.top" :data-number="tile.numbers">
+  <p :class="{sumPiece: tile.sumPiece}" :style="{color: number, background:addColor}">{{tile.numbers}}</p>
+</li>
 
 </div>
 
@@ -10,7 +11,7 @@
 <script>
 export default {
   name: 'Piece',
-  props: ['tile'],
+  props: ['tile', 'sumPiece'],
   data() {
     return {
       color: "",
@@ -98,7 +99,7 @@ export default {
         return this.colors["more"].bgColor;
       }
     },
-    number(){
+    number() {
       if (this.tile.numbers != 0 && this.tile.numbers <= 2048) {
         let number = "" + this.tile.numbers;
         return this.colors[number].color;
@@ -106,10 +107,10 @@ export default {
         return this.colors["more"].color;
       }
     },
-    changeFont(){
+    changeFont() {
       let number = "" + this.tile.numbers;
-      if(number){
-          return this.colors[number].fontFamily;
+      if (number) {
+        return this.colors[number].fontFamily;
       }
 
     }
@@ -121,8 +122,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
-
-
 .piece {
     width: 100%;
     height: 100%;
@@ -132,12 +131,67 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: 500;
-    font-size: 45px;
     position: absolute;
-    color: white;
     z-index: 1;
-    transition: 2000ms all ease-in-out;
+    text-align: center;
+    transition: all 100ms ease-in-out;
+
+    &.newTile {
+
+        p {
+            animation: scale 0.4s ease;
+        }
+    }
+
+    p {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 500;
+        font-size: 45px;
+        position: absolute;
+        color: white;
+        z-index: 1;
+        text-align: center;
+
+        &.sumPiece {
+            animation: sumPiece 0.4s ease;
+        }
+
+    }
+
+    @keyframes sumPiece {
+        0% {
+            transform: rotate(-5deg);
+        }
+
+        50% {
+            transform: rotate(5deg);
+        }
+
+        100% {
+            transform: rotate(0);
+
+        }
+    }
+
+    @keyframes scale {
+        0% {
+            transform: scale(0);
+        }
+
+        80% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+
+        }
+    }
 
 }
 </style>

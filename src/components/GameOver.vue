@@ -1,6 +1,6 @@
 <template>
 
-  <div class="gameOver" :class="{gameOverr: isGameOver}">
+  <div class="gameOver" :class="{gameOver__active: isGameOver}">
     <p class="text">Game over!</p>
     <Button @click.native="newGame" :btnText="text" />
   </div>
@@ -43,8 +43,8 @@ $c-03: #81c7b8;
     align-items: center;
     flex-direction: column;
     z-index: 1;
-    transition: all 0.4s ease;
-
+    transition: all 1s ease;
+        opacity: 0;
 
     &:after,
     &:before {
@@ -69,7 +69,6 @@ $c-03: #81c7b8;
     }
 
     .text {
-
         z-index: 1;
         text-align: center;
         color: $c-02;
@@ -82,7 +81,6 @@ $c-03: #81c7b8;
         letter-spacing: 3px;
         font-size: 30px;
         opacity: 0;
-
     }
 
     p {
@@ -90,39 +88,12 @@ $c-03: #81c7b8;
     }
 
     .btn {
-
         transform: translateY(20px);
         transition: all 0.6s ease;
         z-index: 1;
-
     }
 
 
-  &.gameOverr {
-        width: 100%;
-        height: 100%;
-        border-radius: 5px;
-        transition: all 0.4s ease;
-
-        .text {
-            font-size: 40px;
-            opacity: 1;
-            letter-spacing: 3px;
-            transition: 0.4s ease;
-        }
-
-        .btn {
-            transform: translateY(0px);
-              transition: all 0.6s ease;
-        }
-
-        &:after,
-        &:before {
-            border-radius: 5px;
-            transition: all 0.5s ease;
-        }
-
-    }
 
 }
 
