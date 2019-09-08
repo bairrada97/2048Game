@@ -1,6 +1,9 @@
 <template>
   <main id="app">
-    <Game />
+     <div class="wrapper">
+        <Game />
+     </div>
+
   </main>
 </template>
 
@@ -27,5 +30,14 @@ export default {
   align-items: center;
   justify-content: center;
   background: #ffe4d4;
+
+  .wrapper{
+    margin: 0 auto;
+    max-width: 1440px;
+    width: 90%;
+    padding: 0 5%;
+    position: relative;
+    display: block;
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-<li :style="{transform: `translate(${tile.left}px, ${tile.top}px)`}" :class="{newTile: tile.new}" class="piece" :data-left=" tile.left" :data-top="tile.top" :data-number="tile.numbers">
+<li :style="{width: `${pieceWidth}px`, height: `${pieceWidth}px`, transform: `translate(${tile.left}px, ${tile.top}px)`}" :class="{newTile: tile.new}" class="piece" :data-left=" tile.left" :data-top="tile.top" :data-number="tile.numbers">
   <p :class="{sumPiece: tile.sumPiece}" :style="{color: number, background:addColor}">{{tile.numbers}}</p>
 </li>
 
@@ -11,7 +11,7 @@
 <script>
 export default {
   name: 'Piece',
-  props: ['tile', 'sumPiece'],
+  props: ['tile', 'sumPiece', 'pieceWidth'],
   data() {
     return {
       color: "",
@@ -123,8 +123,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
 .piece {
-    width: 100%;
-    height: 100%;
+
     max-width: 110px;
     max-height: 110px;
     border-radius: 5px;
