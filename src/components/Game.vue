@@ -102,7 +102,7 @@ mounted() {
         if (this.initialY === null) return;
 
 
-
+ 
         if (Math.abs(diffX) > Math.abs(diffY) || Math.abs(diffX) < Math.abs(diffY)) {
           this.moves.forEach(item => item.move = false);
 
