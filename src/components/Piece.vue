@@ -122,6 +122,22 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
+@mixin lg {
+   @media screen and (max-width: 850px) {
+      @content;
+   }
+}
+@mixin md {
+   @media screen and (max-width: 650px) {
+      @content;
+   }
+}
+
+@mixin sm {
+   @media screen and (max-width: 500px) {
+      @content;
+   }
+}
 .piece {
 
     max-width: 110px;
@@ -155,6 +171,14 @@ export default {
         color: white;
         z-index: 1;
         text-align: center;
+
+        @include md{
+          font-size: 28px;
+        }
+
+        @include sm{
+          font-size: 22px;
+        }
 
         &.sumPiece {
             animation: sumPiece 0.4s ease;

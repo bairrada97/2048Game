@@ -4,7 +4,7 @@
 
   <div class="controls">
     <Score :scoreTotal="scoreTotal" :scoreNumber="scoreNumber" :highScore="highScore" :scoreAnimation="scoreAnimation" />
-    <div class="">
+    <div v-if="highScore">
       <p class="scoreTitle">Highest Score:</p>
       <p class="scoreTotal">{{highScore}}</p>
     </div>
@@ -78,7 +78,9 @@ export default {
       sumPiece: false,
       index: 0,
       initialX: null,
-      initialY: null
+      initialY: null,
+      diffY: null,
+      diffX: null,
   };
 },
 mounted() {
@@ -87,51 +89,38 @@ mounted() {
     var storedValue = localStorage.getItem("score");
     this.highScore = storedValue;
     window.addEventListener("keydown", this.gameLogic);
-    window.addEventListener("touchstart", this.startTouch);
-    window.addEventListener("touchmove", this.moveTouch);
+    window.addEventListener("touchstart", this.startTouch, false);
+    window.addEventListener("touchmove", this.gameLogic, false);
+
   },
   methods: {
-    async gameLogic({keyCode}) {
+    async gameLogic({keyCode, touches}) {
       this.isSlide = false;
-      this.gameMove(keyCode);
-      await this.afterCombine(keyCode);
-    },
-    async afterCombineMobile(e, diffX, diffY){
-        await this.delay();
+      if(touches){
         if (this.initialX === null) return;
         if (this.initialY === null) return;
+        let currentX = touches[0].clientX,
+          currentY = touches[0].clientY;
 
+          this.diffX = this.initialX - currentX,
+          this.diffY = this.initialY - currentY;
+      }
 
- 
-        if (Math.abs(diffX) > Math.abs(diffY) || Math.abs(diffX) < Math.abs(diffY)) {
-          this.moves.forEach(item => item.move = false);
+      this.gameMove(keyCode);
+      if (keyCode === 40 || keyCode === 38 || keyCode === 37 || keyCode === 39 || this.diffX  || this.diffY) {
+        await this.afterCombine(keyCode);
+      }
 
-          if (this.isSlide) {
-              this.isGameOver = false;
-              this.addRandomNumber(1);
-          }
-
-          const allFilled = this.board.filter(element => Object.entries(element.tiles).length != 0);
-          if (allFilled.length === this.board.length && this.gameOver()) {
-            localStorage.setItem('score', this.scoreTotal);
-            var storedValue = localStorage.getItem("score");
-            this.isGameOver = true;
-            if (this.scoreTotal >= storedValue) this.highScore = storedValue;
-
-          }
-
-          this.scoreNumber = this.sumParcial;
-          this.sumParcial = 0;
-         }
     },
     async afterCombine(keyCode){
+      //await this.delay();
       await this.delay();
-      if (keyCode === 40 || keyCode === 38 || keyCode === 37 || keyCode === 39) {
-        this.moves.forEach(item => item.move = false);
+      this.cleanMoves();
 
         if (this.isSlide) {
             this.isGameOver = false;
-            this.addRandomNumber(1);
+          this.addRandomNumber(1)
+
         }
 
         const allFilled = this.board.filter(element => Object.entries(element.tiles).length != 0);
@@ -145,12 +134,11 @@ mounted() {
 
         this.scoreNumber = this.sumParcial;
         this.sumParcial = 0;
-      }
+        this.initialX= null;
+        this.initialY= null;
     },
     async sumNumbers(collumn) {
-
       for (let i = 0; i < collumn.length - 1; i++) {
-
         let sum = collumn[i].tiles.numbers != undefined && collumn[i + 1].tiles.numbers != undefined ? collumn[i].tiles.numbers == collumn[i + 1].tiles.numbers : false;
         let getTile = this.tiles.find(tile => tile.id === collumn[i].id),
           deletePreviousTile = this.tiles.find(tile => tile.id === collumn[i + 1].id);
@@ -180,8 +168,9 @@ mounted() {
       this.scoreAnimation = true;
       getTile.sumPiece = false;
       this.isSlide = true;
-
-
+    },
+    async cleanMoves(){
+        this.moves.forEach(item => item.move = false);
     },
     renderBoard() {
       let widthGrid = this.$refs.grid.clientWidth,
@@ -236,7 +225,6 @@ mounted() {
         tileNumber = this.tiles.filter(tile => tile.numbers !== "");
 
       const moveArrow = this.moves.find(item => item.move == true);
-
       moveArrow.move = true;
 
       let getEmpty = "",
@@ -251,8 +239,6 @@ mounted() {
         getTile = tileNumber.find(tile => tile.id === element.id);
 
         if (getEmpty && getTile) {
-
-
           getTile.left = getEmpty.left;
           getTile.top = getEmpty.top;
 
@@ -269,6 +255,7 @@ mounted() {
 
     },
     gameMove(keyCode) {
+      var that = this;
       for (var i = 0; i < this.rowSize; i++) {
         const collumn = this.board.filter(item => item.y == i);
         const reverseCollumn = collumn.map((item, index) => collumn[collumn.length - 1 - index]);
@@ -299,6 +286,27 @@ mounted() {
 
 
         }
+        if(that.diffX || that.diffY){
+          if (Math.abs(that.diffX) > Math.abs(that.diffY)) {
+
+            if (that.diffX > 0) {
+              this.moves[3].move = true;
+              this.combine(row);
+            } else {
+              this.moves[2].move = true;
+              this.combine(reverseRow);
+            }
+          } else {
+            if (that.diffY > 0) {
+              this.moves[1].move = true;
+              this.combine(collumn);
+            } else {
+              this.moves[0].move = true;
+              this.combine(reverseCollumn);
+            }
+          }
+        }
+
       }},
     delay() {
       return new Promise(resolve => setTimeout(resolve, 100));
@@ -358,50 +366,6 @@ mounted() {
       this.initialX = e.touches[0].clientX;
       this.initialY = e.touches[0].clientY;
     },
-    async moveTouch(e) {
-        e.preventDefault();
-      this.isSlide = false;
-      if (this.initialX === null) return;
-      if (this.initialY === null) return;
-
-      let currentX = e.touches[0].clientX,
-        currentY = e.touches[0].clientY,
-        diffX = this.initialX - currentX,
-        diffY = this.initialY - currentY;
-
-        for (var i = 0; i < this.rowSize; i++) {
-          const collumn = this.board.filter(item => item.y == i);
-          const reverseCollumn = collumn.map((item, index) => collumn[collumn.length - 1 - index]);
-          const row = this.board.filter(item => item.x == i);
-          const reverseRow = row.map((item, index) => row[row.length - 1 - index]);
-
-          if (Math.abs(diffX) > Math.abs(diffY)) {
-
-            if (diffX > 0) {
-              this.moves[3].move = true;
-              this.combine(row);
-            } else {
-              this.moves[2].move = true;
-              this.combine(reverseRow);
-            }
-          } else {
-            if (diffY > 0) {
-              this.moves[1].move = true;
-              this.combine(collumn);
-            } else {
-              this.moves[0].move = true;
-              this.combine(reverseCollumn);
-            }
-          }
-
-      }
-
-        await this.afterCombineMobile(e, diffX, diffY);
-      this.initialX = null;
-      this.initialY = null;
-
-
-    }
 
   }
 };
