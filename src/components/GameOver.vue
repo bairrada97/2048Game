@@ -45,6 +45,7 @@ $c-03: #81c7b8;
     z-index: 1;
     transition: all 1s ease;
         opacity: 0;
+        visibility: hidden;
 
     &:after,
     &:before {

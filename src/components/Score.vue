@@ -28,6 +28,7 @@ export default {
 $c-02: #7084a1;
 .score {
     position: relative;
+    min-width: 150px;
 }
 
 .scoreContainer {
@@ -49,6 +50,7 @@ $c-02: #7084a1;
     font-family: "Barlow Condensed", sans-serif;
     color: $c-02;
     letter-spacing: 2px;
+
 }
 
 .scorePartial {

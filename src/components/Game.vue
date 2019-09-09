@@ -1,16 +1,14 @@
 <template>
 <div class="gameContainer">
   <div class="mainTitle">2048</div>
-
   <div class="controls">
     <Score :scoreTotal="scoreTotal" :scoreNumber="scoreNumber" :highScore="highScore" :scoreAnimation="scoreAnimation" />
-    <div v-if="highScore">
+    <div class="highScoreContainer" v-if="highScore">
       <p class="scoreTitle">Highest Score:</p>
       <p class="scoreTotal">{{highScore}}</p>
     </div>
-    <Button @click.native="newGame" />
+    <Button @click.native="newGame" :class="{start: btnActiveClicked}" />
   </div>
-
   <div class="game">
     <ul class="game__grid" ref="grid">
       <Piece v-for="(tile, index) in tiles" :key="tile" :tile="tile" :sumPiece="sumPiece" :pieceWidth="widthPiece" v-show="tile.numbers" />
@@ -51,6 +49,7 @@ export default {
       sumParcial: 0,
       highScore: 0,
       getEmpty: "",
+      btnActiveClicked: false,
       widthPiece: 0,
       moves: [
         {
@@ -69,8 +68,6 @@ export default {
           name: "left",
           move: false
         },
-
-
     ],
     isSlide: false,
       isGameOver: false,
@@ -90,21 +87,14 @@ mounted() {
     this.highScore = storedValue;
     window.addEventListener("keydown", this.gameLogic);
     window.addEventListener("touchstart", this.startTouch, false);
-    window.addEventListener("touchmove", this.gameLogic, false);
+    window.addEventListener("touchmove", this.getTouchMovement);
+    window.addEventListener("touchend", this.gameLogic);
 
   },
   methods: {
-    async gameLogic({keyCode, touches}) {
+    async gameLogic({keyCode}) {
       this.isSlide = false;
-      if(touches){
-        if (this.initialX === null) return;
-        if (this.initialY === null) return;
-        let currentX = touches[0].clientX,
-          currentY = touches[0].clientY;
 
-          this.diffX = this.initialX - currentX,
-          this.diffY = this.initialY - currentY;
-      }
 
       this.gameMove(keyCode);
       if (keyCode === 40 || keyCode === 38 || keyCode === 37 || keyCode === 39 || this.diffX  || this.diffY) {
@@ -318,7 +308,15 @@ mounted() {
         this.scoreAnimation = false;
       }, 400);
     },
-    newGame() {
+    clickedNewGame(){
+      this.btnActiveClicked = true;
+
+          setTimeout(() => {
+      this.btnActiveClicked = false;
+     }, 3000);
+   },
+    newGame(event) {
+      this.clickedNewGame();
       this.board = [];
       this.tiles = [];
       this.renderBoard();
@@ -366,6 +364,17 @@ mounted() {
       this.initialX = e.touches[0].clientX;
       this.initialY = e.touches[0].clientY;
     },
+    getTouchMovement({touches}){
+
+        if (this.initialX === null) return;
+        if (this.initialY === null) return;
+        let currentX = touches[0].clientX,
+          currentY = touches[0].clientY;
+
+          this.diffX = this.initialX - currentX,
+          this.diffY = this.initialY - currentY;
+
+    }
 
   }
 };
@@ -427,10 +436,28 @@ $c-01: #f9d1c0;
     border-radius: 5px;
     margin-bottom: 20px;
     padding: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    justify-content: center;
+
+    @include md{
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+        grid-row-gap: 20px;
+        max-width: 400px;
+
+    }
+
+    @include sm{
+      max-width: 320px;
+    }
+
+    .highScoreContainer{
+        grid-area: 2/2/1/2;
+    }
+
 }
 
 .game {
@@ -493,7 +520,7 @@ $c-01: #f9d1c0;
         align-items: center;
     }
 
-    /* .fade-leave-active below version 2.1.8 */
+
 }
 
 .gameOver__active {
@@ -502,6 +529,8 @@ $c-01: #f9d1c0;
     border-radius: 5px;
     transition: all 1s ease;
     opacity: 1;
+    visibility: visible;
+
 
     .text {
         font-size: 40px;
