@@ -1,6 +1,6 @@
 <template>
 <div class="score">
-  <h2 class="scoreTitle">Your Score:</h2>
+  <h2 class="scoreTitle">Score:</h2>
   <div class="scoreContainer">
     <p class="scoreTotal">{{scoreTotal}}</p>
     <span v-show="scoreAnimation" class="scorePartial">+{{scoreNumber}}</span>
@@ -26,9 +26,29 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
 $c-02: #7084a1;
+
+
+@mixin lg {
+   @media screen and (max-width: 850px) {
+      @content;
+   }
+}
+@mixin md {
+   @media screen and (max-width: 650px),  screen and  (max-height: 800px) {
+      @content;
+   }
+}
+
+@mixin sm {
+   @media screen and (max-width: 500px), screen and  (max-height: 660px) {
+      @content;
+   }
+}
+
 .score {
     position: relative;
-    min-width: 150px;
+
+
 }
 
 .scoreContainer {
@@ -51,6 +71,10 @@ $c-02: #7084a1;
     color: $c-02;
     letter-spacing: 2px;
 
+    @include md{
+     font-size: 22px;
+    }
+
 }
 
 .scorePartial {
@@ -61,6 +85,10 @@ $c-02: #7084a1;
     animation: scorePartial 0.4s ease forwards;
     margin-left: 10px;
     letter-spacing: 2px;
+
+    @include md{
+     font-size: 18px;
+    }
 
 }
 

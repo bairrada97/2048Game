@@ -1,10 +1,7 @@
 <template>
-
-  <div class="gameOver" :class="{gameOver__active: isGameOver}">
-    <p class="text">Game over!</p>
-    <Button @click.native="newGame" :btnText="text" />
-  </div>
-
+<div class="gameOver" :class="{gameOver__active: isGameOver}">
+  <p class="text">Game over!</p>
+</div>
 </template>
 
 <script>
@@ -34,6 +31,18 @@ $c-01: #f9d1c0;
 $c-02: #7084a1;
 $c-03: #81c7b8;
 
+@mixin md {
+   @media screen and (max-width: 650px),  screen and  (max-height: 800px) {
+      @content;
+   }
+}
+
+@mixin sm {
+   @media screen and (max-width: 500px), screen and  (max-height: 660px) {
+      @content;
+   }
+}
+
 .gameOver {
     position: absolute;
     width: 50%;
@@ -44,8 +53,10 @@ $c-03: #81c7b8;
     flex-direction: column;
     z-index: 1;
     transition: all 1s ease;
-        opacity: 0;
-        visibility: hidden;
+    opacity: 0;
+    visibility: hidden;
+
+
 
     &:after,
     &:before {
@@ -82,10 +93,10 @@ $c-03: #81c7b8;
         letter-spacing: 3px;
         font-size: 30px;
         opacity: 0;
-    }
 
-    p {
-        margin-bottom: 40px;
+        @include md{
+          font-size: 22px;
+        }
     }
 
     .btn {
@@ -94,9 +105,5 @@ $c-03: #81c7b8;
         z-index: 1;
     }
 
-
-
 }
-
-
 </style>

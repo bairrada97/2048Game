@@ -128,13 +128,13 @@ export default {
    }
 }
 @mixin md {
-   @media screen and (max-width: 650px) {
+   @media screen and (max-width: 650px),  screen and  (max-height: 800px) {
       @content;
    }
 }
 
 @mixin sm {
-   @media screen and (max-width: 500px) {
+   @media screen and (max-width: 500px), screen and  (max-height: 660px) {
       @content;
    }
 }
@@ -181,7 +181,7 @@ export default {
         }
 
         &.sumPiece {
-            animation: sumPiece 0.4s ease;
+            animation: scale2 0.75s ease;
         }
 
     }
@@ -208,6 +208,21 @@ export default {
 
         80% {
             transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+
+        }
+    }
+
+    @keyframes scale2 {
+        0% {
+            transform: scale(1);
+        }
+
+        80% {
+            transform: scale(1.3);
         }
 
         100% {

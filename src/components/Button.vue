@@ -1,5 +1,5 @@
 <template>
-<button class="btn"><span></span><p data-title="new game" data-text="start!" data-start="good luck!"></p></button>
+<button aria-label="newGame" class="btn"><span></span><p data-title="new game" data-text="start!" data-start="good luck!"></p></button>
 </template>
 
 <script>
@@ -24,33 +24,34 @@ $c-02: #7084a1;
 /*txt*/
 $c-03: #81c7b8;
 /*success*/
+
 @mixin lg {
    @media screen and (max-width: 850px) {
       @content;
    }
 }
 @mixin md {
-   @media screen and (max-width: 650px) {
+   @media screen and (max-width: 650px),  screen and  (max-height: 800px) {
       @content;
    }
 }
 
 @mixin sm {
-   @media screen and (max-width: 500px) {
+   @media screen and (max-width: 500px), screen and  (max-height: 600px) {
       @content;
    }
 }
 
 button {
-   width: 150px;
-   height: 50px;
+   width: 120px;
+   height: 40px;
    background-color: white;
-   margin: 20px;
+   margin: 20px 0 20px 20px;
    color: $c-02;
    position: relative;
    overflow: hidden;
-   font-size: 14px;
-   letter-spacing: 1px;
+   font-size: 12px;
+   letter-spacing: 0.5px;
    font-weight: 500;
    text-transform: uppercase;
    transition: all 0.3s ease;
@@ -60,11 +61,11 @@ button {
    align-items: center;
    justify-content: center;
    border-radius: 3px;
+   grid-area: 2/3/1/3;
+   justify-self: flex-end;
+   pointer-events: all;
 
-   @include md{
-         grid-area: 2/3/2/1;
-         margin: 0 auto;
-   }
+
 
    &:before,
    &:after {
@@ -140,12 +141,16 @@ button {
          content: attr(data-title);
          top: 50%;
          transform: translateY(-50%);
+
+
       }
 
       &:after {
          content: attr(data-text);
          top: 150%;
          color: $c-03;
+
+
       }
    }
 
@@ -154,6 +159,10 @@ button {
       &:before,
       &:after {
          width: 100%;
+
+         @include md{
+           width: 0;
+         }
       }
 
       span {
@@ -161,6 +170,10 @@ button {
          &:before,
          &:after {
             height: 100%;
+
+            @include md{
+              height: 0;
+            }
          }
       }
 
@@ -168,11 +181,24 @@ button {
          &:before {
             top: -50%;
             transform: rotate(5deg);
+
+            @include md{
+              top: 50%;
+              transform: rotate(0deg)  translateY(-50%);
+            }
          }
 
          &:after {
+
             top: 50%;
             transform: translateY(-50%);
+
+            @include md{
+              content: none;
+
+            }
+
+
          }
       }
    }

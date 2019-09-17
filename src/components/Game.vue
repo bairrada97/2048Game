@@ -4,7 +4,7 @@
   <div class="controls">
     <Score :scoreTotal="scoreTotal" :scoreNumber="scoreNumber" :highScore="highScore" :scoreAnimation="scoreAnimation" />
     <div class="highScoreContainer" v-if="highScore">
-      <p class="scoreTitle">Highest Score:</p>
+      <p class="scoreTitle">Highest:</p>
       <p class="scoreTotal">{{highScore}}</p>
     </div>
     <Button @click.native="newGame" :class="{start: btnActiveClicked}" />
@@ -20,6 +20,7 @@
       <GameOver :newGame="newGame" :isGameOver="isGameOver" />
     </transition>
   </div>
+  <p class="instructions">{{changeInstructionsText}}</p>
 </div>
 </template>
 
@@ -78,6 +79,8 @@ export default {
       initialY: null,
       diffY: null,
       diffX: null,
+      instructions: "",
+      dragging: false
   };
 },
 mounted() {
@@ -87,24 +90,36 @@ mounted() {
     this.highScore = storedValue;
     window.addEventListener("keydown", this.gameLogic);
     window.addEventListener("touchstart", this.startTouch, false);
-    window.addEventListener("touchmove", this.getTouchMovement);
-    window.addEventListener("touchend", this.gameLogic);
+    window.addEventListener("touchmove", this.getTouchMovement, false);
+    window.addEventListener("touchend", this.gameLogic, false);
 
   },
-  methods: {
-    async gameLogic({keyCode}) {
-      this.isSlide = false;
-
-
-      this.gameMove(keyCode);
-      if (keyCode === 40 || keyCode === 38 || keyCode === 37 || keyCode === 39 || this.diffX  || this.diffY) {
-        await this.afterCombine(keyCode);
+  computed:{
+    changeInstructionsText(){
+      if(window.innerWidth <= 800){
+        return this.instructions = "HOW TO PLAY: Use your finger to move the tiles. When two tiles with the same number touch, they merge into one!"
+      }else{
+        return this.instructions = "HOW TO PLAY: Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!";
       }
+    }
+  },
+  methods: {
+    async gameLogic(e) {
+
+      this.isSlide = false;
+      if(!this.dragging && !e.keyCode) return
+
+
+      this.gameMove(e.keyCode);
+      if (e.keyCode === 40 || e.keyCode === 38 || e.keyCode === 37 || e.keyCode === 39 || this.diffX  || this.diffY) {
+        await this.afterCombine(e.keyCode);
+      }
+
+      this.dragging = false;
 
     },
     async afterCombine(keyCode){
-      //await this.delay();
-      await this.delay();
+      await this.delay(75);
       this.cleanMoves();
 
         if (this.isSlide) {
@@ -115,17 +130,15 @@ mounted() {
 
         const allFilled = this.board.filter(element => Object.entries(element.tiles).length != 0);
         if (allFilled.length === this.board.length && this.gameOver()) {
-          localStorage.setItem('score', this.scoreTotal);
           var storedValue = localStorage.getItem("score");
           this.isGameOver = true;
-          if (this.scoreTotal >= storedValue) this.highScore = storedValue;
-
+          if (this.scoreTotal >= storedValue) this.highScore = this.scoreTotal;
+          localStorage.setItem('score', this.scoreTotal);
         }
 
         this.scoreNumber = this.sumParcial;
         this.sumParcial = 0;
-        this.initialX= null;
-        this.initialY= null;
+
     },
     async sumNumbers(collumn) {
       for (let i = 0; i < collumn.length - 1; i++) {
@@ -146,7 +159,7 @@ mounted() {
       }
     },
     async afterSum(collumn, i, getTile, deletePreviousTile) {
-      await this.delay();
+      await this.delay(75);
       collumn[i + 1].tiles = {};
       let sumNumbers = getTile.numbers += deletePreviousTile.numbers;
       getTile.numbers = sumNumbers;
@@ -298,8 +311,8 @@ mounted() {
         }
 
       }},
-    delay() {
-      return new Promise(resolve => setTimeout(resolve, 100));
+    delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     },
     combine(collumn) {
       this.slide(collumn);
@@ -361,20 +374,28 @@ mounted() {
       return false;
     },
     startTouch(e) {
+
       this.initialX = e.touches[0].clientX;
       this.initialY = e.touches[0].clientY;
     },
-    getTouchMovement({touches}){
+    getTouchMovement(e){
 
+        this.dragging = true;
         if (this.initialX === null) return;
         if (this.initialY === null) return;
-        let currentX = touches[0].clientX,
-          currentY = touches[0].clientY;
+        let currentX = e.touches[0].clientX,
+          currentY = e.touches[0].clientY;
 
           this.diffX = this.initialX - currentX,
           this.diffY = this.initialY - currentY;
 
-    }
+          this.initialX= null;
+          this.initialY= null;
+
+          console.log(this.initialX, this.initialY);
+
+    },
+
 
   }
 };
@@ -383,6 +404,7 @@ mounted() {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
 $c-01: #f9d1c0;
+$c-02: #7084a1;
 
 @mixin lg {
    @media screen and (max-width: 850px) {
@@ -390,13 +412,13 @@ $c-01: #f9d1c0;
    }
 }
 @mixin md {
-   @media screen and (max-width: 650px) {
+   @media screen and (max-width: 650px),  screen and  (max-height: 800px) {
       @content;
    }
 }
 
 @mixin sm {
-   @media screen and (max-width: 500px) {
+   @media screen and (max-width: 500px), screen and  (max-height: 660px) {
       @content;
    }
 }
@@ -441,12 +463,10 @@ $c-01: #f9d1c0;
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     justify-content: center;
+    grid-column-gap: 10px;
 
     @include md{
-        grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr 1fr;
-        grid-row-gap: 20px;
-        max-width: 400px;
+        max-width: 440px;
 
     }
 
@@ -537,6 +557,10 @@ $c-01: #f9d1c0;
         opacity: 1;
         letter-spacing: 3px;
         transition: 0.4s ease;
+
+        @include md{
+          font-size: 30px;
+        }
     }
 
     .btn {
@@ -550,5 +574,23 @@ $c-01: #f9d1c0;
         transition: all 0.5s ease;
     }
 
+}
+
+.instructions{
+  margin-top: 20px;
+  max-width: 540px;
+  font-family: "Barlow Semi Condensed";
+  color: $c-02;
+  line-height: 1.2;
+
+
+      @include md{
+          max-width: 400px;
+
+      }
+
+      @include sm{
+        max-width: 320px;
+      }
 }
 </style>
