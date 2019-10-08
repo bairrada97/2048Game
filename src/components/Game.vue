@@ -13,6 +13,7 @@
         <p class="scoreTotal">{{highScore}}</p>
       </div>
       <Button @click.native="newGame" :class="{start: btnActiveClicked}" />
+      
     </div>
 
     <div class="game">
@@ -33,7 +34,10 @@
         <GameOver :newGame="newGame" :isGameOver="isGameOver" :score="scoreTotal" />
       </transition>
     </div>
+     <button v-if="isGameOver" class="btn alternate" @click="openLeaderboard">Leaderboard</button>
+     <Leaderboard v-if="openModal"/>
     <p class="instructions">{{changeInstructionsText}}</p>
+
   </div>
 </template>
 
@@ -43,6 +47,7 @@ import Piece from "@/components/Piece.vue";
 import Button from "@/components/Button.vue";
 import GameOver from "@/components/GameOver.vue";
 import Score from "@/components/Score.vue";
+import Leaderboard from "@/components/Leaderboard.vue";
 export default {
   name: "Game",
   props: [""],
@@ -50,7 +55,8 @@ export default {
     Piece,
     Button,
     GameOver,
-    Score
+    Score,
+    Leaderboard
   },
   data() {
     return {
@@ -58,7 +64,7 @@ export default {
       rowSize: 4,
       board: [],
       tiles: [],
-      scoreTotal: 0,
+      scoreTotal: 9999,
       scoreNumber: 0,
       sumParcial: 0,
       highScore: 0,
@@ -84,7 +90,7 @@ export default {
         }
       ],
       isSlide: false,
-      isGameOver: false,
+      isGameOver: true,
       scoreAnimation: false,
       sumPiece: false,
       index: 0,
@@ -93,7 +99,8 @@ export default {
       diffY: null,
       diffX: null,
       instructions: "",
-      dragging: false
+      dragging: false,
+      openModal: false
     };
   },
   mounted() {
@@ -448,6 +455,9 @@ export default {
 
       this.initialX = null;
       this.initialY = null;
+    },
+    openLeaderboard(){
+      this.openModal = true;
     }
   }
 };
@@ -599,13 +609,13 @@ $c-02: #7084a1;
   visibility: visible;
 
   .text {
-    font-size: 40px;
+    font-size: 28px;
     opacity: 1;
-    letter-spacing: 3px;
+    letter-spacing: 1.5px;
     transition: 0.4s ease;
 
     @include md {
-      font-size: 30px;
+      font-size: 24px;
     }
   }
 

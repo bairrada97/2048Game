@@ -1,7 +1,8 @@
 <template>
   <main id="app">
     <div class="wrapper">
-      <Game />
+      <Game />    
+      <Leaderboard v-if="openModal"/>
       <div class="gameMakers">
         <p>
           By

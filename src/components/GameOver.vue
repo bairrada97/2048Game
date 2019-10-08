@@ -1,57 +1,38 @@
 <template>
   <div class="gameOver" :class="{gameOver__active: isGameOver}">
-    <p class="text">Game over!</p>
+    <p class="text" v-if="!hasSendScore">Game over!</p>
     <div class="sendScore" v-if="!hasSendScore">
-      <p>Your total score is: {{score}}</p>
-      <input type="text" placeholder="name" v-model="name" maxlength="8" />
-      <button @click="writeUserData">Send Score</button>
+      <p class="description">Your total score is: {{score}}</p>
+      <input class="inputSendScore" type="text" placeholder="name" v-model="name"  />
+      <button @click="writeUserData" class="btn alternate" :btnText="btnText">send score</button>
     </div>
-    <div class="leaderBoard">
-      <h2>LeaderBoard</h2>
-      <li v-for="leader in leaderBoard" :key="leader">
-        <span>{{leader.name}}</span>
-        {{leader.score}}
-      </li>
-    </div>
+    <p class="text" v-if="hasSendScore">Your score was sent!</p>
+    <button v-if="hasSendScore" class="btn alternate" @click="openLeaderboard">Leaderboard</button>
+
   </div>
 </template>
 
 <script>
 import Button from "@/components/Button.vue";
+import Leaderboard from "@/components/Leaderboard.vue";
 
 export default {
   name: "GameOver",
   components: {
-    Button
+    Button,
+    Leaderboard
   },
   props: ["newGame", "text", "isGameOver", "score"],
   data() {
     return {
       leaderBoard: [],
       name: "",
-      hasSendScore: false
+      hasSendScore: false,
+      btnText: "send score",
+       openModal: false,
     };
   },
-  mounted() {
-    this.getLeaders();
-  },
   methods: {
-    getLeaders() {
-      const db = this.$firebase.firestore();
-      db.collection("HighScore")
-        .orderBy("score", "desc")
-        .limit(10)
-        .get()
-        .then(querySnapshot => {
-          this.leaderBoard = [];
-          querySnapshot.forEach(doc => {
-            this.leaderBoard.push({
-              name: doc.data().name,
-              score: doc.data().score
-            });
-          });
-        });
-    },
     writeUserData() {
       const input1 = document.querySelector("input").value;
       const db = this.$firebase.firestore();
@@ -66,9 +47,12 @@ export default {
           .doc()
           .set(data);
 
-        this.getLeaders();
         this.hasSendScore = true;
+      
       }
+    },
+    openLeaderboard(){
+      this.openModal = true;
     }
   }
 };
@@ -106,6 +90,7 @@ $c-03: #81c7b8;
   transition: all 1s ease;
   opacity: 0;
   visibility: hidden;
+  text-align: center;
 
   &:after,
   &:before {
@@ -130,28 +115,15 @@ $c-03: #81c7b8;
   }
 
   .sendScore {
-    margin-top: 24px;
+    margin-top: 50px;
     z-index: 9;
   }
 
-  .leaderBoard {
-    z-index: 1;
-    margin-top: 24px;
-
-    h2 {
-      font-size: 24px;
-      margin-bottom: 16px;
-    }
-
-    span {
-      color: $c-02;
-      font-size: 16px;
-    }
-
-    li {
-      list-style: none;
-    }
+  .description{
+    color: $c-02;
   }
+
+  
 
   .text {
     z-index: 1;
@@ -163,12 +135,13 @@ $c-03: #81c7b8;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    letter-spacing: 3px;
-    font-size: 30px;
+    letter-spacing: 1.5px;
+    font-size: 28px;
     opacity: 0;
+    margin-bottom: 30px;
 
     @include md {
-      font-size: 22px;
+      font-size: 20px;
     }
   }
 
@@ -176,6 +149,29 @@ $c-03: #81c7b8;
     transform: translateY(20px);
     transition: all 0.6s ease;
     z-index: 1;
+    margin: 0 auto;
+  }
+
+  .inputSendScore{
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: 0 8px 15px -5px rgba($c-02, 0.3);
+    border: 0;
+    background: white;
+    transition: 0.4s ease all;
+    color: $c-02;
+    margin: 30px 0;
+    width: 200px;
+
+    &::placeholder{
+      color: $c-02;
+    }
+
+    &:focus{
+      outline: 0;
+       box-shadow: 0 2px 5px -5px rgba($c-02, 0.8);
+    }
+
   }
 }
 </style>

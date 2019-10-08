@@ -6,5 +6,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     image: '/../assets/DSC_7836.jpg',
+    
   }
 })

@@ -65,7 +65,14 @@ button {
    justify-self: flex-end;
    pointer-events: all;
 
-
+   &.alternate{
+      width: auto;
+      min-width: 100px;
+      height: 30px;
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid $c-02;
+   }
 
    &:before,
    &:after {
