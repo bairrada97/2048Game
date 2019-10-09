@@ -1,17 +1,23 @@
 <template>
-<li :style="{width: `${pieceWidth}px`, height: `${pieceWidth}px`, transform: `translate(${tile.left}px, ${tile.top}px)`}" :class="{newTile: tile.new}" class="piece" :data-left=" tile.left" :data-top="tile.top" :data-number="tile.numbers">
-  <p :class="{sumPiece: tile.sumPiece}" :style="{color: number, background:addColor}">{{tile.numbers}}</p>
-</li>
-
-</div>
-
-</div>
+  <li
+    :style="{width: `${pieceWidth}px`, height: `${pieceWidth}px`, transform: `translate(${tile.left}px, ${tile.top}px)`}"
+    :class="{newTile: tile.new}"
+    class="piece"
+    :data-left=" tile.left"
+    :data-top="tile.top"
+    :data-number="tile.numbers"
+  >
+    <p
+      :class="{sumPiece: tile.sumPiece}"
+      :style="{color: number, background:addColor}"
+    >{{tile.numbers}}</p>
+  </li>
 </template>
 
 <script>
 export default {
-  name: 'Piece',
-  props: ['tile', 'sumPiece', 'pieceWidth'],
+  name: "Piece",
+  props: ["tile", "sumPiece", "pieceWidth"],
   data() {
     return {
       color: "",
@@ -81,14 +87,13 @@ export default {
           color: "#8da5ca",
           fontFamily: "Barlow Condensed"
         },
-        "more": {
+        more: {
           bgColor: "#69597a",
           color: "#c2b9cc",
           fontFamily: "Barlow Condensed"
         }
       }
-
-    }
+    };
   },
   computed: {
     addColor() {
@@ -112,124 +117,100 @@ export default {
       if (number) {
         return this.colors[number].fontFamily;
       }
-
     }
-
   }
-
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
-@mixin lg {
-   @media screen and (max-width: 850px) {
-      @content;
-   }
-}
-@mixin md {
-   @media screen and (max-width: 650px),  screen and  (max-height: 800px) {
-      @content;
-   }
-}
+@import "@/styles/layout.scss";
 
-@mixin sm {
-   @media screen and (max-width: 500px), screen and  (max-height: 660px) {
-      @content;
-   }
-}
 .piece {
+  max-width: 110px;
+  max-height: 110px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  transition: all 100ms ease-in-out;
 
-    max-width: 110px;
-    max-height: 110px;
+  &.newTile {
+    p {
+      animation: scale 0.4s ease;
+    }
+  }
+
+  p {
+    width: 100%;
+    height: 100%;
     border-radius: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: 500;
+    font-size: 45px;
     position: absolute;
+    color: white;
     z-index: 1;
     text-align: center;
-    transition: all 100ms ease-in-out;
 
-    &.newTile {
-
-        p {
-            animation: scale 0.4s ease;
-        }
+    @include md {
+      font-size: 28px;
     }
 
-    p {
-        width: 100%;
-        height: 100%;
-        border-radius: 5px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: 500;
-        font-size: 45px;
-        position: absolute;
-        color: white;
-        z-index: 1;
-        text-align: center;
-
-        @include md{
-          font-size: 28px;
-        }
-
-        @include sm{
-          font-size: 22px;
-        }
-
-        &.sumPiece {
-            animation: scale2 0.75s ease;
-        }
-
+    @include sm {
+      font-size: 22px;
     }
 
-    @keyframes sumPiece {
-        0% {
-            transform: rotate(-5deg);
-        }
+    &.sumPiece {
+      animation: scale2 0.75s ease;
+    }
+  }
 
-        50% {
-            transform: rotate(5deg);
-        }
-
-        100% {
-            transform: rotate(0);
-
-        }
+  @keyframes sumPiece {
+    0% {
+      transform: rotate(-5deg);
     }
 
-    @keyframes scale {
-        0% {
-            transform: scale(0);
-        }
-
-        80% {
-            transform: scale(1.1);
-        }
-
-        100% {
-            transform: scale(1);
-
-        }
+    50% {
+      transform: rotate(5deg);
     }
 
-    @keyframes scale2 {
-        0% {
-            transform: scale(1);
-        }
+    100% {
+      transform: rotate(0);
+    }
+  }
 
-        80% {
-            transform: scale(1.3);
-        }
-
-        100% {
-            transform: scale(1);
-
-        }
+  @keyframes scale {
+    0% {
+      transform: scale(0);
     }
 
+    80% {
+      transform: scale(1.1);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes scale2 {
+    0% {
+      transform: scale(1);
+    }
+
+    80% {
+      transform: scale(1.3);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
 }
 </style>

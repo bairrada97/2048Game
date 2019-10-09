@@ -1,0 +1,25 @@
+@import "@/styles/reset.scss";
+$bg-01: #fdf5f0;
+
+$c-01: #f9d1c0;
+/*game*/
+$c-02: #7084a1;
+/*txt*/
+$c-03: #81c7b8;
+
+@mixin lg {
+  @media screen and (max-width: 850px) {
+    @content;
+  }
+}
+@mixin md {
+  @media screen and (max-width: 650px), screen and (max-height: 800px) {
+    @content;
+  }
+}
+
+@mixin sm {
+  @media screen and (max-width: 500px), screen and (max-height: 660px) {
+    @content;
+  }
+}

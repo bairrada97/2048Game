@@ -1,14 +1,13 @@
 <template>
   <div class="gameOver" :class="{gameOver__active: isGameOver}">
-    <p class="text" v-if="!hasSendScore">Game over!</p>
-    <div class="sendScore" v-if="!hasSendScore">
-      <p class="description">Your total score is: {{score}}</p>
-      <input class="inputSendScore" type="text" placeholder="name" v-model="name"  />
+    <p class="gameOver__text" v-if="!sendScore">Game over!</p>
+    <div class="gameOver__sendScore" v-if="!sendScore">
+      <p class="gameOver__description">Your total score is: {{score}}</p>
+      <input class="inputSendScore" type="text" placeholder="name" v-model="name" />
       <button @click="writeUserData" class="btn alternate" :btnText="btnText">send score</button>
     </div>
-    <p class="text" v-if="hasSendScore">Your score was sent!</p>
-    <button v-if="hasSendScore" class="btn alternate" @click="openLeaderboard">Leaderboard</button>
-
+    <p class="gameOver__scoreDescription" v-if="sendScore">Your score was sent!</p>
+    <button v-if="sendScore" class="btn alternate" @click="openLeaderboard">Leaderboard</button>
   </div>
 </template>
 
@@ -27,9 +26,7 @@ export default {
     return {
       leaderBoard: [],
       name: "",
-      hasSendScore: false,
-      btnText: "send score",
-       openModal: false,
+      btnText: "send score"
     };
   },
   methods: {
@@ -47,12 +44,16 @@ export default {
           .doc()
           .set(data);
 
-        this.hasSendScore = true;
-      
+        return this.$store.commit("sendScore", true);
       }
     },
-    openLeaderboard(){
-      this.openModal = true;
+    openLeaderboard() {
+      this.$store.commit("modal", true);
+    }
+  },
+  computed: {
+    sendScore() {
+      return this.$store.state.hasSendScore;
     }
   }
 };
@@ -61,22 +62,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
-$bg-01: #fdf5f0;
-$c-01: #f9d1c0;
-$c-02: #7084a1;
-$c-03: #81c7b8;
-
-@mixin md {
-  @media screen and (max-width: 650px), screen and (max-height: 800px) {
-    @content;
-  }
-}
-
-@mixin sm {
-  @media screen and (max-width: 500px), screen and (max-height: 660px) {
-    @content;
-  }
-}
+@import "@/styles/layout.scss";
 
 .gameOver {
   position: absolute;
@@ -114,18 +100,16 @@ $c-03: #81c7b8;
     cursor: pointer;
   }
 
-  .sendScore {
+  &__sendScore {
     margin-top: 50px;
     z-index: 9;
   }
 
-  .description{
+  &__description {
     color: $c-02;
   }
 
-  
-
-  .text {
+  &__text {
     z-index: 1;
     text-align: center;
     color: $c-02;
@@ -138,11 +122,26 @@ $c-03: #81c7b8;
     letter-spacing: 1.5px;
     font-size: 28px;
     opacity: 0;
-    margin-bottom: 30px;
 
     @include md {
       font-size: 20px;
     }
+  }
+
+  &__scoreDescription {
+    z-index: 1;
+    text-align: center;
+    color: $c-02;
+    font-weight: 500;
+    transition: all 0.6s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    letter-spacing: 1.5px;
+    font-size: 28px;
+
+    margin-bottom: 30px;
   }
 
   .btn {
@@ -152,7 +151,7 @@ $c-03: #81c7b8;
     margin: 0 auto;
   }
 
-  .inputSendScore{
+  .inputSendScore {
     padding: 10px 15px;
     border-radius: 5px;
     box-shadow: 0 8px 15px -5px rgba($c-02, 0.3);
@@ -163,15 +162,14 @@ $c-03: #81c7b8;
     margin: 30px 0;
     width: 200px;
 
-    &::placeholder{
+    &::placeholder {
       color: $c-02;
     }
 
-    &:focus{
+    &:focus {
       outline: 0;
-       box-shadow: 0 2px 5px -5px rgba($c-02, 0.8);
+      box-shadow: 0 2px 5px -5px rgba($c-02, 0.8);
     }
-
   }
 }
 </style>

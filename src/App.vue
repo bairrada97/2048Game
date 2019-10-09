@@ -1,8 +1,10 @@
 <template>
   <main id="app">
     <div class="wrapper">
-      <Game />    
-      <Leaderboard v-if="openModal"/>
+      <Game />
+      <transition appear-to-class="leaderBoard__active" v-show="openModal">
+        <Leaderboard />
+      </transition>
       <div class="gameMakers">
         <p>
           By
@@ -17,17 +19,27 @@
 <script>
 import Game from "@/components/Game.vue";
 import store from "./store";
+import Leaderboard from "@/components/Leaderboard.vue";
 
 export default {
   name: "app",
   components: {
-    Game
+    Game,
+    Leaderboard
+  },
+  computed: {
+    sendScore() {
+      return this.$store.state.hasSendScore;
+    },
+    openModal() {
+      return this.$store.state.openModal;
+    }
   }
 };
 </script>
 
 <style lang="scss">
-@import "@/styles/reset.scss";
+@import "@/styles/layout.scss";
 @import url("https://fonts.googleapis.com/css?family=Barlow+Condensed:300,400,500,600,700,800,900|Barlow+Semi+Condensed:300,400,500,600,700,800,900|Barlow:300,400,500,600,700,800,900&display=swap");
 
 $c-02: #7084a1;
@@ -49,6 +61,7 @@ $c-02: #7084a1;
     padding: 0 5%;
     position: relative;
     display: block;
+    height: 100vh;
   }
 
   .gameMakers {
@@ -86,6 +99,40 @@ $c-02: #7084a1;
           background-color: $c-02;
         }
       }
+    }
+  }
+
+  .leaderBoard__active {
+    border-radius: 5px;
+    transition: all 1s ease;
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+
+    .leaderBoard__container{
+      *{z-index: 2;}
+    }
+
+    .gameOver__text {
+      font-size: 28px;
+      opacity: 1;
+      letter-spacing: 1.5px;
+      transition: 0.4s ease;
+
+      @include md {
+        font-size: 24px;
+      }
+    }
+
+    .btn {
+      transform: translateY(0px);
+      transition: all 0.6s ease;
+    }
+
+    &:after,
+    &:before {
+      border-radius: 5px;
+      transition: all 0.5s ease;
     }
   }
 }

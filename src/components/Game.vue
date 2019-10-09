@@ -13,9 +13,7 @@
         <p class="scoreTotal">{{highScore}}</p>
       </div>
       <Button @click.native="newGame" :class="{start: btnActiveClicked}" />
-      
     </div>
-
     <div class="game">
       <ul class="game__grid" ref="grid">
         <Piece
@@ -28,16 +26,15 @@
         />
       </ul>
       <ul class="game__board">
-        <li v-for="piece in board" class="item" :key="piece.id"></li>
+        <li v-for="(piece, i) in board" class="item" :key="piece.id"></li>
       </ul>
       <transition appear-to-class="gameOver__active" v-show="isGameOver">
         <GameOver :newGame="newGame" :isGameOver="isGameOver" :score="scoreTotal" />
       </transition>
     </div>
-     <button v-if="isGameOver" class="btn alternate" @click="openLeaderboard">Leaderboard</button>
-     <Leaderboard v-if="openModal"/>
-    <p class="instructions">{{changeInstructionsText}}</p>
 
+    <button :style="!isGameOver ? 'opacity: 1;' : 'opacity: 0;' "  class="btn alternate" @click="openLeaderboard">Leaderboard</button>
+    <p class="instructions">{{changeInstructionsText}}</p>
   </div>
 </template>
 
@@ -60,47 +57,29 @@ export default {
   },
   data() {
     return {
-      size: 16,
-      rowSize: 4,
-      board: [],
-      tiles: [],
-      scoreTotal: 9999,
-      scoreNumber: 0,
-      sumParcial: 0,
-      highScore: 0,
-      getEmpty: "",
-      btnActiveClicked: false,
-      widthPiece: 0,
-      moves: [
-        {
-          name: "bottom",
-          move: false
-        },
-        {
-          name: "top",
-          move: false
-        },
-        {
-          name: "right",
-          move: false
-        },
-        {
-          name: "left",
-          move: false
-        }
-      ],
-      isSlide: false,
-      isGameOver: true,
-      scoreAnimation: false,
-      sumPiece: false,
-      index: 0,
-      initialX: null,
-      initialY: null,
-      diffY: null,
-      diffX: null,
-      instructions: "",
-      dragging: false,
-      openModal: false
+      size: this.$store.state.size,
+      rowSize: this.$store.state.rowSize,
+      board: this.$store.state.board,
+      tiles: this.$store.state.tiles,
+      scoreTotal: this.$store.state.scoreTotal,
+      scoreNumber: this.$store.state.scoreNumber,
+      sumParcial: this.$store.state.sumParcial,
+      highScore: this.$store.state.highScore,
+      getEmpty: this.$store.state.getEmpty,
+      btnActiveClicked: this.$store.state.btnActiveClicked,
+      widthPiece: this.$store.state.widthPiece,
+      moves: this.$store.state.moves,
+      isSlide: this.$store.state.isSlide,
+      isGameOver: this.$store.state.isGameOver,
+      scoreAnimation: this.$store.state.scoreAnimation,
+      sumPiece: this.$store.state.sumPiece,
+      index: this.$store.state.index,
+      initialX: this.$store.state.initialX,
+      initialY: this.$store.state.initialY,
+      diffY: this.$store.state.diffY,
+      diffX: this.$store.state.diffX,
+      instructions: this.$store.state.instructions,
+      dragging: this.$store.state.dragging
     };
   },
   mounted() {
@@ -122,6 +101,9 @@ export default {
         return (this.instructions =
           "HOW TO PLAY: Use your arrow keys to move the tiles. When two tiles with the same number touch, they merge into one!");
       }
+    },
+    sendScore() {
+      return this.$store.state.hasSendScore;
     }
   },
   methods: {
@@ -456,8 +438,9 @@ export default {
       this.initialX = null;
       this.initialY = null;
     },
-    openLeaderboard(){
-      this.openModal = true;
+    openLeaderboard() {
+
+      this.$store.commit("modal", true);
     }
   }
 };
@@ -465,25 +448,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  lang="scss">
-$c-01: #f9d1c0;
-$c-02: #7084a1;
-
-@mixin lg {
-  @media screen and (max-width: 850px) {
-    @content;
-  }
-}
-@mixin md {
-  @media screen and (max-width: 650px), screen and (max-height: 800px) {
-    @content;
-  }
-}
-
-@mixin sm {
-  @media screen and (max-width: 500px), screen and (max-height: 660px) {
-    @content;
-  }
-}
+@import "@/styles/layout.scss";
 
 .gameContainer {
   width: 100%;
@@ -608,7 +573,7 @@ $c-02: #7084a1;
   opacity: 1;
   visibility: visible;
 
-  .text {
+  .gameOver__text {
     font-size: 28px;
     opacity: 1;
     letter-spacing: 1.5px;
