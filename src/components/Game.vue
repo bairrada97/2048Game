@@ -33,8 +33,8 @@
       </transition>
     </div>
 
-    <button :style="!isGameOver ? 'opacity: 1;' : 'opacity: 0;' "  class="btn alternate" @click="openLeaderboard">Leaderboard</button>
     <p class="instructions">{{changeInstructionsText}}</p>
+    <button :style="!isGameOver ? 'opacity: 1;' : 'opacity: 0;' "  class="alternate" @click="openLeaderboard">Leaderboard</button>
   </div>
 </template>
 
@@ -483,7 +483,7 @@ export default {
   max-width: 540px;
   width: 100%;
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   padding: 0;
   z-index: 1;
   display: grid;
@@ -515,6 +515,7 @@ export default {
   border-radius: 5px;
   width: 500px;
   height: 500px;
+
 
   @include md {
     width: 400px;
@@ -573,7 +574,7 @@ export default {
   opacity: 1;
   visibility: visible;
 
-  .gameOver__text {
+  .gameOver__text{
     font-size: 28px;
     opacity: 1;
     letter-spacing: 1.5px;
@@ -584,9 +585,15 @@ export default {
     }
   }
 
-  .btn {
+  .gameOver__scoreDescription{
     transform: translateY(0px);
-    transition: all 0.6s ease;
+     opacity: 1;
+  }
+
+  .btn,
+  .alternate {
+    transform: translateY(0px);
+     opacity: 1;
   }
 
   &:after,
@@ -597,11 +604,12 @@ export default {
 }
 
 .instructions {
-  margin-top: 20px;
+  margin-top: 24px;
   max-width: 540px;
   font-family: "Barlow Semi Condensed";
   color: $c-02;
   line-height: 1.2;
+  margin-bottom: 32px;
 
   @include md {
     max-width: 400px;

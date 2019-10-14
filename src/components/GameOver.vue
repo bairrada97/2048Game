@@ -4,10 +4,10 @@
     <div class="gameOver__sendScore" v-if="!sendScore">
       <p class="gameOver__description">Your total score is: {{score}}</p>
       <input class="inputSendScore" type="text" placeholder="name" v-model="name" />
-      <button @click="writeUserData" class="btn alternate" :btnText="btnText">send score</button>
+      <button @click="writeUserData" class="alternate" :btnText="btnText">send score</button>
     </div>
-    <p class="gameOver__scoreDescription" v-if="sendScore">Your score was sent!</p>
-    <button v-if="sendScore" class="btn alternate" @click="openLeaderboard">Leaderboard</button>
+    <p class="gameOver__scoreDescription" v-show="sendScore">Your score was sent!</p>
+    <button v-show="sendScore" class="alternate" @click="openLeaderboard">Leaderboard</button>
   </div>
 </template>
 
@@ -77,6 +77,7 @@ export default {
   opacity: 0;
   visibility: hidden;
   text-align: center;
+  
 
   &:after,
   &:before {
@@ -101,7 +102,7 @@ export default {
   }
 
   &__sendScore {
-    margin-top: 50px;
+    margin-top: 48px;
     z-index: 9;
   }
 
@@ -140,8 +141,10 @@ export default {
     flex-direction: column;
     letter-spacing: 1.5px;
     font-size: 28px;
-
     margin-bottom: 30px;
+    transform: translateY(20px);
+    transition: 0.5s ease all;
+     opacity: 1;
   }
 
   .btn {
@@ -171,5 +174,9 @@ export default {
       box-shadow: 0 2px 5px -5px rgba($c-02, 0.8);
     }
   }
+}
+
+.alternate{
+    opacity: 0;
 }
 </style>

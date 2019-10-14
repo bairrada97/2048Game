@@ -71,65 +71,56 @@ export default {
   left: 0;
   opacity: 0;
 
-  
 
   &__container {
-    width: 70%;
-    height: 80vh;
+    width: calc(70% - 100px);
+    height: calc(80vh - 100px);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: $bg-01;
     border-radius: 10px;
-    display: flex;
+    display: flex; 
     justify-content: center;
     flex-direction: column;
     box-sizing: border-box;
     padding: 80px 5%;
+    transition: 0.4s ease all;
 
-  &:after,
-  &:before {
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    content: "";
-    position: absolute;
-    border-radius: 100%;
-    transition: all 0.4s ease;
-    display: flex;
-  }
-  &:before {
-    background-color:  $bg-01;;
-    opacity: 0.8;
-  }
-  &:after {
-    background-color:  $bg-01;;
-    opacity: 0.5;
-    cursor: pointer;
-  }
+    
+    h2,li{
+      opacity: 0;
+      z-index: 2;
+      transform: translateY(40px);
+        transition: 0.4s ease all;
+    }
 
-    @include md {
+
+    @include lg {
       width: 90%;
       height: auto;
       padding: 60px 8%;
-    }
-
-     @include sm {
-      width: 90%;
-      height: auto;
-      padding: 40px 8%;
     }
   }
 
   &__closeIcon {
     position: absolute;
-    top: 0;
     width: 32px;
-    right: 5%;
-    top: 5%;
+    right: 40px;
+    top: 40px;
     fill: $c-02;
+    cursor: pointer;
+    transition: 0.3s ease all;
+
+    &:hover{
+      transform: rotate(90deg);
+    }
+
+      @include md {
+      top: 20px;
+      right: 20px;
+    }
   }
 
   h2 {

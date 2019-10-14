@@ -19,7 +19,7 @@ export default {
 <style  lang="scss">
 @import "@/styles/layout.scss";
 
-button {
+.btn {
   width: 120px;
   height: 40px;
   background-color: white;
@@ -41,17 +41,6 @@ button {
   grid-area: 2/3/1/3;
   justify-self: flex-end;
   pointer-events: all;
-
-  &.alternate {
-    width: auto;
-    min-width: 100px;
-    height: 30px;
-    padding: 8px 16px;
-    background: transparent;
-    border: 1px solid $c-02;
-    margin-left: 0;
-
-  }
 
   &:before,
   &:after {
@@ -178,6 +167,8 @@ button {
         }
       }
     }
+
+    
   }
 
   &.start {
@@ -217,6 +208,28 @@ button {
       }
     }
   }
+}
+
+.alternate{
+  display: block;
+  color: $c-02;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 0;
+  border-radius: 3px;
+  pointer-events: all;
+  width: auto;
+  min-width: 100px;
+  height: 30px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid $c-02;
+  margin: 0 auto;
+  z-index: 2;
 }
 
 button:active {

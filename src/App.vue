@@ -2,9 +2,7 @@
   <main id="app">
     <div class="wrapper">
       <Game />
-      <transition appear-to-class="leaderBoard__active" v-show="openModal">
-        <Leaderboard />
-      </transition>
+   
       <div class="gameMakers">
         <p>
           By
@@ -13,6 +11,9 @@
         </p>
       </div>
     </div>
+       <transition appear-to-class="leaderBoard__active" v-show="openModal">
+        <Leaderboard />
+      </transition>
   </main>
 </template>
 
@@ -104,35 +105,25 @@ $c-02: #7084a1;
 
   .leaderBoard__active {
     border-radius: 5px;
-    transition: all 1s ease;
     opacity: 1;
     visibility: visible;
-    z-index: 1;
+    z-index: 2;
 
     .leaderBoard__container{
-      *{z-index: 2;}
+      width: 70%;
+      height: 80vh;
+
+    @include lg {
+      width: 90%;
+      height: auto;
+      padding: 60px 8%;
+      max-height: 550px;
     }
 
-    .gameOver__text {
-      font-size: 28px;
-      opacity: 1;
-      letter-spacing: 1.5px;
-      transition: 0.4s ease;
-
-      @include md {
-        font-size: 24px;
+      h2,li{
+        opacity: 1;
+         transform: translateY(0);
       }
-    }
-
-    .btn {
-      transform: translateY(0px);
-      transition: all 0.6s ease;
-    }
-
-    &:after,
-    &:before {
-      border-radius: 5px;
-      transition: all 0.5s ease;
     }
   }
 }
