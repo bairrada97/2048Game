@@ -228,8 +228,15 @@ export default {
   padding: 8px 16px;
   background: transparent;
   border: 1px solid $c-02;
+  box-shadow: inset 0 0 0 $c-02;
   margin: 0 auto;
   z-index: 2;
+  transition: all 0.3s  ease ;
+
+  &:hover{
+    color: #fff;
+    box-shadow: inset 0 -30px 0 $c-02; 
+  }
 }
 
 button:active {

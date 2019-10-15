@@ -13,13 +13,29 @@ $c-03: #81c7b8;
   }
 }
 @mixin md {
-  @media screen and (max-width: 650px), screen and (max-height: 800px) {
+  @media screen and (max-width: 650px) {
+    @content;
+  }
+}
+
+@mixin mdBoard {
+  @media screen and (max-width: 650px),
+  screen and (max-height: 800px) {
     @content;
   }
 }
 
 @mixin sm {
-  @media screen and (max-width: 500px), screen and (max-height: 660px) {
+  @media screen and (max-width: 500px){
     @content;
   }
 }
+
+@mixin smBoard {
+
+  @media screen and (max-width: 500px),
+  screen and (max-height: 660px) {
+    @content;
+  }
+}
+

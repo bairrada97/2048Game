@@ -9,7 +9,7 @@ export default new Vuex.Store({
     rowSize: 4,
     board: [],
     tiles: [],
-    scoreTotal: 9999,
+    scoreTotal: 0,
     scoreNumber: 0,
     sumParcial: 0,
     highScore: 0,
@@ -35,7 +35,7 @@ export default new Vuex.Store({
       }
     ],
     isSlide: false,
-    isGameOver: true,
+    isGameOver: false,
     scoreAnimation: false,
     sumPiece: false,
     index: 0,
@@ -46,7 +46,8 @@ export default new Vuex.Store({
     instructions: "",
     dragging: false,
     openModal: false,
-    hasSendScore: false
+    hasSendScore: false,
+    leaderBoard:[]
   },
   mutations: {
     modal: (state, payload) => {
@@ -54,6 +55,11 @@ export default new Vuex.Store({
     },
     sendScore: (state, payload) => {
       state.hasSendScore = payload;
+    },
+    dataScore: (state, payload) =>{
+      state.leaderBoard = [];
+      state.leaderBoard.push(payload);
+
     }
   }
 });

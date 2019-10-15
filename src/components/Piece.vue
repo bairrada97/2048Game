@@ -9,7 +9,7 @@
   >
     <p
       :class="{sumPiece: tile.sumPiece}"
-      :style="{color: number, background:addColor}"
+      :style="{color: number, background:addColor, fontFamily: changeFont}"
     >{{tile.numbers}}</p>
   </li>
 </template>
@@ -152,7 +152,7 @@ export default {
     justify-content: center;
     align-items: center;
     font-weight: 500;
-    font-size: 45px;
+    font-size: 40px;
     position: absolute;
     color: white;
     z-index: 1;

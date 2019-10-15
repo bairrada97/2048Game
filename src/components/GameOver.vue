@@ -3,7 +3,7 @@
     <p class="gameOver__text" v-if="!sendScore">Game over!</p>
     <div class="gameOver__sendScore" v-if="!sendScore">
       <p class="gameOver__description">Your total score is: {{score}}</p>
-      <input class="inputSendScore" type="text" placeholder="name" v-model="name" />
+      <input class="inputSendScore" type="text" placeholder="name" v-model="name" maxlength="16"/>
       <button @click="writeUserData" class="alternate" :btnText="btnText">send score</button>
     </div>
     <p class="gameOver__scoreDescription" v-show="sendScore">Your score was sent!</p>
@@ -44,8 +44,27 @@ export default {
           .doc()
           .set(data);
 
+        this.getLeaders();
         return this.$store.commit("sendScore", true);
       }
+    },
+     getLeaders() {
+      const db = this.$firebase.firestore();
+      db.collection("HighScore")
+        .orderBy("score", "desc")
+        .limit(10)
+        .get()
+        .then(querySnapshot => {
+          this.$store.commit('dataScore', []);
+          querySnapshot.forEach(doc => {
+            this.leaderBoard.push({
+              name: doc.data().name,
+              score: doc.data().score
+            });
+             this.$store.commit('dataScore', this.leaderBoard);
+          });
+        });
+       
     },
     openLeaderboard() {
       this.$store.commit("modal", true);

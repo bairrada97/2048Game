@@ -369,6 +369,7 @@ export default {
       this.scoreTotal = 0;
       this.scoreNumber = 0;
       this.isGameOver = false;
+      this.$store.commit("sendScore", false);
     },
     gameOver() {
       for (var i = 0; i < this.rowSize; i++) {
@@ -469,11 +470,11 @@ export default {
   opacity: 0.6;
   transition: all 0.5s ease;
 
-  @include md {
+  @include mdBoard {
     transform: translateY(-250px);
     font-size: 280px;
   }
-  @include sm {
+  @include smBoard {
     transform: translateY(-170px);
     font-size: 180px;
   }
@@ -492,11 +493,11 @@ export default {
   justify-content: center;
   grid-column-gap: 10px;
 
-  @include md {
+  @include mdBoard {
     max-width: 440px;
   }
 
-  @include sm {
+  @include smBoard {
     max-width: 320px;
   }
 
@@ -517,12 +518,12 @@ export default {
   height: 500px;
 
 
-  @include md {
+  @include mdBoard {
     width: 400px;
     height: 400px;
   }
 
-  @include sm {
+  @include smBoard {
     width: 280px;
     height: 280px;
   }
@@ -580,7 +581,7 @@ export default {
     letter-spacing: 1.5px;
     transition: 0.4s ease;
 
-    @include md {
+    @include mdBoard {
       font-size: 24px;
     }
   }
@@ -611,11 +612,11 @@ export default {
   line-height: 1.2;
   margin-bottom: 32px;
 
-  @include md {
+  @include mdBoard {
     max-width: 400px;
   }
 
-  @include sm {
+  @include smBoard {
     max-width: 320px;
   }
 }

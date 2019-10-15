@@ -57,8 +57,10 @@ export default {
   font-family: "Barlow Condensed", sans-serif;
   font-weight: 500;
   animation: scorePartial 0.4s ease forwards;
-  margin-left: 10px;
   letter-spacing: 2px;
+  position: absolute;
+  left: 0;
+  bottom: -24px;
 
   @include md {
     font-size: 18px;

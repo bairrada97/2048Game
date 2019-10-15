@@ -4,7 +4,7 @@
       <svg  @click="closeModal" class="leaderBoard__closeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g data-name="Layer 2"><g data-name="close"><rect width="24" height="24" transform="rotate(180 12 12)" opacity="0"/><path d="M13.41 12l4.3-4.29a1 1 0 1 0-1.42-1.42L12 10.59l-4.29-4.3a1 1 0 0 0-1.42 1.42l4.3 4.29-4.3 4.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l4.29-4.3 4.29 4.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42z"/></g></g></svg>
       <h2>LeaderBoard</h2>
       <ul>
-        <li v-for="leader in leaderBoard" :key="leader">
+        <li v-for="leader in leaderBoardVisualizer" :key="leader">
           <span class="leaderboard__name">{{leader.name}}</span>
           <span class="leaderboard__score">{{leader.score}}</span>
         </li>
@@ -35,14 +35,17 @@ export default {
         .limit(10)
         .get()
         .then(querySnapshot => {
-          this.leaderBoard = [];
+          this.$store.commit('dataScore', []);
           querySnapshot.forEach(doc => {
             this.leaderBoard.push({
               name: doc.data().name,
               score: doc.data().score
             });
+            this.$store.commit('dataScore', this.leaderBoard);
           });
         });
+       
+        
     },
     closeModal() {
       this.$store.commit("modal", false);
@@ -51,6 +54,9 @@ export default {
   computed:{
      openModal() {
       return this.$store.state.openModal;
+    },
+    leaderBoardVisualizer(){
+      return this.$store.state.leaderBoard[0]
     }
   }
 };
@@ -82,7 +88,6 @@ export default {
     background: $bg-01;
     border-radius: 10px;
     display: flex; 
-    justify-content: center;
     flex-direction: column;
     box-sizing: border-box;
     padding: 80px 5%;
@@ -99,7 +104,7 @@ export default {
 
     @include lg {
       width: 90%;
-      height: auto;
+      height: 100%;
       padding: 60px 8%;
     }
   }
